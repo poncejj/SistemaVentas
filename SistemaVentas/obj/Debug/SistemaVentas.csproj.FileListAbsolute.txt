@@ -1,0 +1,84 @@
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\bin\Debug\SistemaVentas.exe.config
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\bin\Debug\SistemaVentas.exe
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\bin\Debug\SistemaVentas.pdb
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\bin\Debug\CapaNegocio.dll
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\bin\Debug\ModeloDatos.dll
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\bin\Debug\CapaDatos.dll
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\bin\Debug\CapaNegocio.pdb
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\bin\Debug\ModeloDatos.pdb
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\bin\Debug\CapaDatos.pdb
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.csprojResolveAssemblyReference.cache
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmCatalogos.resources
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmCliente.resources
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmLogin.resources
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmPanelPrincipal.resources
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmPaquete.resources
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmProducto.resources
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmReportes.resources
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmRespaldo.resources
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmUsuario.resources
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmVariablesSistema.resources
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmVenta.resources
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.Properties.Resources.resources
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.csproj.GenerateResource.Cache
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.exe
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.pdb
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmPago.resources
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\bin\Debug\SistemaVentas.exe.config
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.exe
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.pdb
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\bin\Debug\SistemaVentas.exe
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\bin\Debug\SistemaVentas.pdb
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\bin\Debug\CapaNegocio.dll
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\bin\Debug\ModeloDatos.dll
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\bin\Debug\CapaDatos.dll
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\bin\Debug\DocumentFormat.OpenXml.dll
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\bin\Debug\CapaNegocio.pdb
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\bin\Debug\ModeloDatos.pdb
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\bin\Debug\CapaDatos.pdb
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.csprojResolveAssemblyReference.cache
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmCatalogos.resources
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmCliente.resources
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmLogin.resources
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmPago.resources
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmPanelPrincipal.resources
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmPaquete.resources
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmProducto.resources
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmReportes.resources
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmRespaldo.resources
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmUsuario.resources
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmVariablesSistema.resources
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmVenta.resources
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.Properties.Resources.resources
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.csproj.GenerateResource.Cache
+C:\@TFS\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\bin\Debug\SistemaVentas.exe.config
+C:\@TFS\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.exe
+C:\@TFS\Sistema Gestor Ventas\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.pdb
+C:\@TFS\SistemaVentas\SistemaVentas\bin\Debug\SistemaVentas.exe.config
+C:\@TFS\SistemaVentas\SistemaVentas\bin\Debug\SistemaVentas.exe
+C:\@TFS\SistemaVentas\SistemaVentas\bin\Debug\SistemaVentas.pdb
+C:\@TFS\SistemaVentas\SistemaVentas\bin\Debug\CapaNegocio.dll
+C:\@TFS\SistemaVentas\SistemaVentas\bin\Debug\ModeloDatos.dll
+C:\@TFS\SistemaVentas\SistemaVentas\bin\Debug\CapaDatos.dll
+C:\@TFS\SistemaVentas\SistemaVentas\bin\Debug\DocumentFormat.OpenXml.dll
+C:\@TFS\SistemaVentas\SistemaVentas\bin\Debug\CapaNegocio.pdb
+C:\@TFS\SistemaVentas\SistemaVentas\bin\Debug\ModeloDatos.pdb
+C:\@TFS\SistemaVentas\SistemaVentas\bin\Debug\CapaDatos.pdb
+C:\@TFS\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.csprojResolveAssemblyReference.cache
+C:\@TFS\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmCatalogos.resources
+C:\@TFS\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmCliente.resources
+C:\@TFS\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmLogin.resources
+C:\@TFS\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmPago.resources
+C:\@TFS\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmPanelPrincipal.resources
+C:\@TFS\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmPaquete.resources
+C:\@TFS\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmProducto.resources
+C:\@TFS\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmReportes.resources
+C:\@TFS\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmRespaldo.resources
+C:\@TFS\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmSeleccionProductos.resources
+C:\@TFS\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmUsuario.resources
+C:\@TFS\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmVariablesSistema.resources
+C:\@TFS\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.frmVenta.resources
+C:\@TFS\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.Properties.Resources.resources
+C:\@TFS\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.csproj.GenerateResource.Cache
+C:\@TFS\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.exe
+C:\@TFS\SistemaVentas\SistemaVentas\obj\Debug\SistemaVentas.pdb

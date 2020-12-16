@@ -1,0 +1,15 @@
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\CapaDatos\bin\Debug\CapaDatos.dll
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\CapaDatos\bin\Debug\CapaDatos.pdb
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\CapaDatos\obj\Debug\CapaDatos.dll
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\CapaDatos\obj\Debug\CapaDatos.pdb
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\CapaDatos\obj\Debug\CapaDatos.csprojResolveAssemblyReference.cache
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\CapaDatos\bin\Debug\CapaDatos.dll
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\CapaDatos\bin\Debug\CapaDatos.pdb
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\CapaDatos\obj\Debug\CapaDatos.csprojResolveAssemblyReference.cache
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\CapaDatos\obj\Debug\CapaDatos.dll
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\CapaDatos\obj\Debug\CapaDatos.pdb
+C:\@TFS\SistemaVentas\CapaDatos\bin\Debug\CapaDatos.dll
+C:\@TFS\SistemaVentas\CapaDatos\bin\Debug\CapaDatos.pdb
+C:\@TFS\SistemaVentas\CapaDatos\obj\Debug\CapaDatos.dll
+C:\@TFS\SistemaVentas\CapaDatos\obj\Debug\CapaDatos.pdb
+C:\@TFS\SistemaVentas\CapaDatos\obj\Debug\CapaDatos.csprojResolveAssemblyReference.cache

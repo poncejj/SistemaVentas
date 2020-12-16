@@ -1,0 +1,20 @@
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\ModeloDatos\bin\Debug\ModeloDatos.dll
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\ModeloDatos\bin\Debug\ModeloDatos.pdb
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\ModeloDatos\obj\Debug\ModeloDatos.csprojResolveAssemblyReference.cache
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\ModeloDatos\obj\Debug\ModeloDatos.csproj.ResolveComReference.cache
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\ModeloDatos\obj\Debug\ModeloDatos.dll
+C:\Users\Juan José Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\ModeloDatos\obj\Debug\ModeloDatos.pdb
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\ModeloDatos\bin\Debug\ModeloDatos.dll
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\ModeloDatos\bin\Debug\ModeloDatos.pdb
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\ModeloDatos\bin\Debug\DocumentFormat.OpenXml.dll
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\ModeloDatos\obj\Debug\ModeloDatos.csprojResolveAssemblyReference.cache
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\ModeloDatos\obj\Debug\ModeloDatos.csproj.ResolveComReference.cache
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\ModeloDatos\obj\Debug\ModeloDatos.dll
+C:\Users\Juan Jose Ponce\Documents\Trabajo\Sistema Gestor Ventas\SistemaVentas\ModeloDatos\obj\Debug\ModeloDatos.pdb
+C:\@TFS\SistemaVentas\ModeloDatos\bin\Debug\ModeloDatos.dll
+C:\@TFS\SistemaVentas\ModeloDatos\bin\Debug\ModeloDatos.pdb
+C:\@TFS\SistemaVentas\ModeloDatos\bin\Debug\DocumentFormat.OpenXml.dll
+C:\@TFS\SistemaVentas\ModeloDatos\obj\Debug\ModeloDatos.csproj.ResolveComReference.cache
+C:\@TFS\SistemaVentas\ModeloDatos\obj\Debug\ModeloDatos.dll
+C:\@TFS\SistemaVentas\ModeloDatos\obj\Debug\ModeloDatos.pdb
+C:\@TFS\SistemaVentas\ModeloDatos\obj\Debug\ModeloDatos.csprojResolveAssemblyReference.cache

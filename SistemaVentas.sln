@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaVentas", "SistemaVentas\SistemaVentas.csproj", "{1A1CE8CB-02BD-4FBA-834B-00D888ADC44B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapaNegocio", "CapaNegocio\CapaNegocio.csproj", "{7F12C087-A528-4C14-9E06-EAC83BA0394D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapaDatos", "CapaDatos\CapaDatos.csproj", "{D493657F-633E-4F1B-9F4F-AF47F99CF15D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModeloDatos", "ModeloDatos\ModeloDatos.csproj", "{25AFBDA2-34C2-4873-9047-D216CEA7B314}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1A1CE8CB-02BD-4FBA-834B-00D888ADC44B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A1CE8CB-02BD-4FBA-834B-00D888ADC44B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A1CE8CB-02BD-4FBA-834B-00D888ADC44B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A1CE8CB-02BD-4FBA-834B-00D888ADC44B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F12C087-A528-4C14-9E06-EAC83BA0394D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F12C087-A528-4C14-9E06-EAC83BA0394D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F12C087-A528-4C14-9E06-EAC83BA0394D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F12C087-A528-4C14-9E06-EAC83BA0394D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D493657F-633E-4F1B-9F4F-AF47F99CF15D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D493657F-633E-4F1B-9F4F-AF47F99CF15D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D493657F-633E-4F1B-9F4F-AF47F99CF15D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D493657F-633E-4F1B-9F4F-AF47F99CF15D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25AFBDA2-34C2-4873-9047-D216CEA7B314}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25AFBDA2-34C2-4873-9047-D216CEA7B314}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25AFBDA2-34C2-4873-9047-D216CEA7B314}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25AFBDA2-34C2-4873-9047-D216CEA7B314}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 5
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://juanjoseponcetorres.visualstudio.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = SistemaVentas\\SistemaVentas.csproj
+		SccProjectName1 = SistemaVentas
+		SccLocalPath1 = SistemaVentas
+		SccProjectUniqueName2 = CapaNegocio\\CapaNegocio.csproj
+		SccProjectName2 = CapaNegocio
+		SccLocalPath2 = CapaNegocio
+		SccProjectUniqueName3 = CapaDatos\\CapaDatos.csproj
+		SccProjectName3 = CapaDatos
+		SccLocalPath3 = CapaDatos
+		SccProjectUniqueName4 = ModeloDatos\\ModeloDatos.csproj
+		SccProjectName4 = ModeloDatos
+		SccLocalPath4 = ModeloDatos
+	EndGlobalSection
+EndGlobal
