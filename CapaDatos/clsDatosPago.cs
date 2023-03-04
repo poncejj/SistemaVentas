@@ -39,7 +39,7 @@ namespace CapaDatos
             return dsPago;
         }
 
-        public bool insertarPago(int idVenta, double valor, string fecha_pago, string tipo_pago)
+        public bool insertarPago(int idCliente, decimal valor, string fecha_pago, string tipo_pago)
         {
             conect = new Conexion();
             conect.abrirConexion();
@@ -47,7 +47,7 @@ namespace CapaDatos
             cmd.CommandType = CommandType.StoredProcedure;
             try
             {
-                cmd.Parameters.Add(new SqlParameter("@id_venta", SqlDbType.Int)).Value = idVenta;
+                cmd.Parameters.Add(new SqlParameter("@id_cliente", SqlDbType.Int)).Value = idCliente;
                 cmd.Parameters.Add(new SqlParameter("@valor", SqlDbType.Decimal)).Value = valor;
                 cmd.Parameters.Add(new SqlParameter("@fecha_pago", SqlDbType.Date)).Value = fecha_pago;
                 cmd.Parameters.Add(new SqlParameter("@tipo_pago", SqlDbType.VarChar)).Value = tipo_pago;
@@ -64,10 +64,9 @@ namespace CapaDatos
             {
                 conect.cerrarConexion();
             }
-
         }
 
-        public bool modificarPago(int idVenta, double valor)
+        public bool modificarPago(int idVenta, decimal valor)
         {
             conect = new Conexion();
             conect.abrirConexion();
@@ -90,7 +89,7 @@ namespace CapaDatos
             }
         }
 
-        public bool eliminarMarca(int id)
+        public bool eliminarPago(int idPago, int idCliente)
         {
             conect = new Conexion();
             conect.abrirConexion();
@@ -98,7 +97,8 @@ namespace CapaDatos
             cmd.CommandType = CommandType.StoredProcedure;
             try
             {
-                cmd.Parameters.Add(new SqlParameter("@id_pago", SqlDbType.Int)).Value = id;
+                cmd.Parameters.Add(new SqlParameter("@id_cliente", SqlDbType.Int)).Value = idCliente;
+                cmd.Parameters.Add(new SqlParameter("@id_pago", SqlDbType.Int)).Value = idPago;
                 cmd.ExecuteNonQuery();
 
                 return true;

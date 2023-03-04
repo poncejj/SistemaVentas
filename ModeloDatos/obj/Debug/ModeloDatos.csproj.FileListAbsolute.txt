@@ -18,3 +18,12 @@ C:\@TFS\SistemaVentas\ModeloDatos\obj\Debug\ModeloDatos.csproj.ResolveComReferen
 C:\@TFS\SistemaVentas\ModeloDatos\obj\Debug\ModeloDatos.dll
 C:\@TFS\SistemaVentas\ModeloDatos\obj\Debug\ModeloDatos.pdb
 C:\@TFS\SistemaVentas\ModeloDatos\obj\Debug\ModeloDatos.csprojResolveAssemblyReference.cache
+C:\Users\USER\Source\Repos\SistemaVentas\ModeloDatos\bin\Debug\ModeloDatos.dll
+C:\Users\USER\Source\Repos\SistemaVentas\ModeloDatos\bin\Debug\ModeloDatos.pdb
+C:\Users\USER\Source\Repos\SistemaVentas\ModeloDatos\bin\Debug\DocumentFormat.OpenXml.dll
+C:\Users\USER\Source\Repos\SistemaVentas\ModeloDatos\obj\Debug\ModeloDatos.csproj.AssemblyReference.cache
+C:\Users\USER\Source\Repos\SistemaVentas\ModeloDatos\obj\Debug\ModeloDatos.csproj.ResolveComReference.cache
+C:\Users\USER\Source\Repos\SistemaVentas\ModeloDatos\obj\Debug\ModeloDatos.csproj.CoreCompileInputs.cache
+C:\Users\USER\Source\Repos\SistemaVentas\ModeloDatos\obj\Debug\ModeloDatos.csproj.CopyComplete
+C:\Users\USER\Source\Repos\SistemaVentas\ModeloDatos\obj\Debug\ModeloDatos.dll
+C:\Users\USER\Source\Repos\SistemaVentas\ModeloDatos\obj\Debug\ModeloDatos.pdb

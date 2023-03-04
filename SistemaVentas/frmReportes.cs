@@ -9,121 +9,152 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CapaNegocio;
 using ModeloDatos;
+using Utilitarios;
+
 namespace SistemaVentas
 {
     public partial class frmReportes : Form
     {
+        DataSet dsReporte = null;
+        int idCliente = 0;
+        bool blCargaCompleta = false;
         public frmReportes()
         {
             InitializeComponent();
+            fechaDesde.Value = DateTime.Now.AddMonths(-1);
+            CargarCombos();
+            CargarDetalleReporte();
         }
 
-        private void btnGenerarReporte1_Click(object sender, EventArgs e)
+        private void CargarCombos()
         {
-            
-            DataSet dsReporte1 = new DataSet();
-            clsNegocioVenta objNegocioVenta = new clsNegocioVenta();
-            clsGenerarReportes objGenerarReporte = new clsGenerarReportes();
+            clsNegocioCliente clsNegocioCliente = new clsNegocioCliente();
+            clsNegocioReferencia objNegocioReferencia = new clsNegocioReferencia();
             try
             {
-                String fechaDesde = calendarioDesde1.Value.ToString("yyyy-MM-dd");
-                String fechaHasta = calendarioHasta1.Value.ToString("yyyy-MM-dd");
-                dsReporte1 = objNegocioVenta.consultarVentasTotales(fechaDesde, fechaHasta);
-
-                string nombreReporte = "Reporte_ventas_" + DateTime.Today.ToString("yyyyMMdd") + DateTime.Today.Hour + DateTime.Today.Minute + DateTime.Today.Second;
-                nombreReporte = nombreReporte.Replace("/", "");
-
-                if (dsReporte1.Tables[0] != null)
+                DataSet dsClientes = clsNegocioCliente.consultarTodosClientes();
+                DataSet dsReferencias = objNegocioReferencia.comboBoxReferencia();
+                if(dsClientes != null)
                 {
-                    objGenerarReporte.generarReporteGenerico(dsReporte1, nombreReporte);
-                }
-                else
-                {
-                    MessageBox.Show("No existen datos para generar el reporte");
+                    DataRow dr = dsClientes.Tables[0].NewRow();
+                    dr["nombre_completo"] = "Todos";
+                    dr["id_cliente"] = 0;
+
+                    dsClientes.Tables[0].Rows.InsertAt(dr, 0);
+                    cbBusquedaCliente.DataSource = dsClientes.Tables[0];
+                    cbBusquedaCliente.ValueMember = "id_cliente";
+                    cbBusquedaCliente.DisplayMember = "nombre_completo";
+
+                    cbBusquedaCliente.SelectedIndex = 0;
                 }
 
+                if(dsReferencias != null)
+                {
+                    DataRow dr = dsReferencias.Tables[0].NewRow();
+                    dr["nombre_referencia"] = "Todos";
+                    dr["id_referencia"] = 0;
+
+                    dsReferencias.Tables[0].Rows.InsertAt(dr, 0);
+                    cbReferencia.DataSource = dsReferencias.Tables[0];
+                    cbReferencia.ValueMember = "id_referencia";
+                    cbReferencia.DisplayMember = "nombre_referencia";
+
+                    cbReferencia.SelectedIndex = 0;
+
+                }
+                cbTipoReporte.SelectedIndex = 0;
+                blCargaCompleta = true;
             }
             catch (Exception)
             {
-                MessageBox.Show("Error al generar el reporte, por favor compruebe que no este abierto el archivo");
+
+                //throw;
             }
         }
 
-        private void cbReferenciaReporte2_SelectedIndexChanged(object sender, EventArgs e)
+        private void cbClienteBusqueda_SelectedIndexChanged(object sender, EventArgs e)
         {
-
-        }
-
-        private void frmReportes_Load(object sender, EventArgs e)
-        {
-            mesAnteriorCalendario();
-            cargarReferencia();
-        }
-
-        private void mesAnteriorCalendario()
-        {
-            DateTime fechaActual = DateTime.Today;
-            int mes = fechaActual.AddMonths(-1).Month;
-            int dia = fechaActual.Day;
-
-            int anio = 0;
-            if (fechaActual.Month == 1)
-            {
-                anio = fechaActual.Year - 1;
-            }
-            else
-            {
-                anio = fechaActual.Year;
-            }
-            calendarioDesde1.Value = DateTime.Parse(dia+"/"+mes+"/"+anio);
-            calendarioDesde2.Value = DateTime.Parse(dia + "/" + mes + "/" + anio);
-            calendarioDesde3.Value = DateTime.Parse(dia + "/" + mes + "/" + anio);
-        }
-
-        private void btnGenerarReporte2_Click(object sender, EventArgs e)
-        {
-            DataSet dsReporte2 = new DataSet();
-            clsNegocioVenta objNegocioVenta = new clsNegocioVenta();
-            clsGenerarReportes objGenerarReporte = new clsGenerarReportes();
-            clsNegocioReferencia objNegocioReferencia = new clsNegocioReferencia();
-            DataSet dsReferencia = objNegocioReferencia.consultarTodosReferencias();
             try
             {
-                String fechaDesde = calendarioDesde2.Value.ToString("yyyy-MM-dd");
-                String fechaHasta = calendarioHasta2.Value.ToString("yyyy-MM-dd");
-                int idReferencia = int.Parse(cbReferencia2.SelectedValue.ToString()); 
-                int index = 1;
-                if (idReferencia == 0)
-                {
-                    foreach(DataRow fila in dsReferencia.Tables[0].Rows)
-                    {
-                        int idReferenciaInterna = int.Parse(fila[0].ToString());
-                        string nombreDataTable = fila[1].ToString();
-                        DataTable dtReporte2 = new DataTable(nombreDataTable);
-                        dtReporte2 = objNegocioVenta.consultarVentasPendientes(fechaDesde,fechaHasta,idReferenciaInterna);
-                        if(dtReporte2!=null)
-                        {
-                            dtReporte2.TableName = nombreDataTable;                        
-                            dsReporte2.Tables.Add(dtReporte2);
-                        }
-                        index++;
-                    }
-                    
-                }
-                else
-                {
-                    DataTable dtReporte2 = new DataTable(cbReferencia2.SelectedText);
-                    dtReporte2 = objNegocioVenta.consultarVentasPendientes(fechaDesde, fechaHasta, idReferencia);
-                    
-                    dsReporte2.Tables.Add(dtReporte2);                        
-                }
+                CargarDetalleReporte();
+            
+            }
+            catch (Exception)
+            {
 
-                string nombreReporte = "Cuentas_por_cobrar_cliente_" + DateTime.Today.ToShortDateString() + DateTime.Today.Hour + DateTime.Today.Minute + DateTime.Today.Second;
+                MessageBox.Show("Error al generar el reporte");
+            };
+        }
+
+        private void CargarDetalleReporte()
+        {
+            clsNegocioSaldo clsNegocioSaldo = new clsNegocioSaldo();
+            clsNegocioPaquete clsNegocioPaquete = new clsNegocioPaquete();
+            clsNegocioVenta clsNegocioVenta = new clsNegocioVenta();
+            try
+            {
+                if (blCargaCompleta)
+                {
+                    int idReferencia = cbReferencia.SelectedValue.ToString().ToInt();
+                    idCliente = cbBusquedaCliente.SelectedValue.ToString().ToInt();
+                    String strFechaDesde = fechaDesde.Value.ToString("yyyy-MM-dd");
+                    String strFechaHasta = fechaHasta.Value.ToString("yyyy-MM-dd");
+
+                    if (cbBusquedaCliente.SelectedIndex == 0)
+                    {
+                        if (cbTipoReporte.SelectedIndex == 0)
+                            dsReporte = clsNegocioSaldo.ConsultarSaldoPendienteTodo(idReferencia);
+                        else if (cbTipoReporte.SelectedIndex == 1)
+                            dsReporte = clsNegocioSaldo.ConsultarPagoRecibido(0, strFechaDesde, strFechaHasta, idReferencia);
+                        else if (cbTipoReporte.SelectedIndex == 2)
+                            dsReporte = clsNegocioPaquete.ConsultarPaqueteTodo(strFechaDesde, strFechaHasta, idReferencia);
+                        else if (cbTipoReporte.SelectedIndex == 3)
+                            dsReporte = clsNegocioVenta.ConsultarVentaTodo(strFechaDesde, strFechaHasta, idReferencia);
+                    }
+                    else
+                    {
+                        if (cbTipoReporte.SelectedIndex == 0)
+                            dsReporte = clsNegocioSaldo.ConsultarSaldoPendiente(idCliente);
+                        else if (cbTipoReporte.SelectedIndex == 1)
+                            dsReporte = clsNegocioSaldo.ConsultarPagoRecibido(idCliente, strFechaDesde, strFechaHasta, idReferencia);
+                        else if (cbTipoReporte.SelectedIndex == 2)
+                            dsReporte = clsNegocioPaquete.ConsultarPaquete(idCliente, strFechaDesde, strFechaHasta,idReferencia);
+                        else if (cbTipoReporte.SelectedIndex == 2)
+                            dsReporte = clsNegocioVenta.ConsultarVenta(idCliente, strFechaDesde, strFechaHasta, idReferencia);
+                    }
+                    if(dsReporte.Tables.Count > 0)
+                    {
+                        DataTable dtDatos = dsReporte.Tables[0].Clone();
+                        foreach(DataTable dt in dsReporte.Tables)
+                        {
+                            foreach (DataRow drTemp in dt.Rows)
+                            {
+                                dtDatos.ImportRow(drTemp);
+
+                            }
+                        }
+                        dgReporte.DataSource = dtDatos;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Error al generar los reportes");
+                //throw;
+            }
+        }
+
+        private void btnGenerarReporte_Click(object sender, EventArgs e)
+        {
+            clsGenerarReportes clsGenerarReporte = new clsGenerarReportes();
+            try
+            {
+                string nombreReporte = cbBusquedaCliente.SelectedText + DateTime.Today.ToShortDateString() + DateTime.Today.Hour + DateTime.Today.Minute + DateTime.Today.Second;
                 nombreReporte = nombreReporte.Replace("/", "");
 
-                if (dsReporte2.Tables[0] != null)
+                if (dsReporte.Tables[0] != null)
                 {
-                    objGenerarReporte.generarReporteGenerico(dsReporte2, nombreReporte);
+                    clsGenerarReporte.generarReporteGenerico(dsReporte, nombreReporte);
                 }
                 else
                 {
@@ -152,101 +183,19 @@ namespace SistemaVentas
                 m_FormDefInstance = value;
             }
         }
-        private void cargarReferencia()
+
+        private void cbTipoReporte_SelectedIndexChanged(object sender, EventArgs e)
         {
-            clsNegocioReferencia objNegocioReferencia = new clsNegocioReferencia();
-            DataSet dsReferencia = objNegocioReferencia.consultarTodosReferencias();
-            cbReferencia2.DataSource = dsReferencia.Tables[0];
-            cbReferencia2.ValueMember = "id_referencia";
-            cbReferencia2.DisplayMember = "nombre_referencia";
-            cbReferencia3.DataSource = dsReferencia.Tables[0];
-            cbReferencia3.ValueMember = "id_referencia";
-            cbReferencia3.DisplayMember = "nombre_referencia";
-
-            DataRow dr = dsReferencia.Tables[0].NewRow();
-            dr["nombre_referencia"] = "Todos";
-            dr["id_referencia"] = 0;
-
-            dsReferencia.Tables[0].Rows.InsertAt(dr, 0);
-            cbReferencia2.SelectedIndex = 0;
-            cbReferencia3.SelectedIndex = 0;
-
-        }
-
-        private void btnGenerarReporte3_Click(object sender, EventArgs e)
-        {
-            DataSet dsReporte3 = new DataSet();
-            clsNegocioPaquete objNegocioPaquete = new clsNegocioPaquete();
-            clsGenerarReportes objGenerarReporte = new clsGenerarReportes();
-            clsNegocioReferencia objNegocioReferencia = new clsNegocioReferencia();
-            DataSet dsReferencia = objNegocioReferencia.consultarTodosReferencias();
             try
             {
-                String fechaDesde = calendarioDesde3.Value.ToString("yyyy-MM-dd");
-                String fechaHasta = calendarioHasta3.Value.ToString("yyyy-MM-dd");
-                int idReferencia = int.Parse(cbReferencia3.SelectedValue.ToString()); 
-                int index = 1;
-                if (idReferencia == 0)
-                {
-                    foreach(DataRow fila in dsReferencia.Tables[0].Rows)
-                    {
-                        int idReferenciaInterna = int.Parse(fila[0].ToString());
-                        string nombreDataTable = fila[1].ToString();
-                        DataTable dtReporte3 = new DataTable(nombreDataTable);
-                        if (rbEntregados.Checked)
-                        {
-                            dtReporte3 = objNegocioPaquete.consultarPaquetesPendientes(fechaDesde, fechaHasta, idReferenciaInterna,1);
-                        }
-                        else
-                        {
-                            dtReporte3 = objNegocioPaquete.consultarPaquetesPendientes(fechaDesde, fechaHasta, idReferenciaInterna,2);
-                        }
-
-                        if(dtReporte3!=null)
-                        {
-                            dtReporte3.TableName = nombreDataTable;
-                            dsReporte3.Tables.Add(dtReporte3);
-                        }
-                        index++;
-                    }
-                    
-                }
-                else
-                {
-                    DataTable dtReporte3 = new DataTable(cbReferencia3.SelectedText);
-                    if (rbEntregados.Checked)
-                    {
-                        dtReporte3 = objNegocioPaquete.consultarPaquetesPendientes(fechaDesde, fechaHasta, idReferencia,1);
-                    }
-                    else
-                    {
-                        dtReporte3 = objNegocioPaquete.consultarPaquetesPendientes(fechaDesde, fechaHasta, idReferencia,2);
-                    }
-                    dsReporte3.Tables.Add(dtReporte3);                        
-                }
-
-                string nombreReporte = "Detalle_paquete_" + DateTime.Today.ToShortDateString() + DateTime.Today.Hour + DateTime.Today.Minute + DateTime.Today.Second;
-                nombreReporte = nombreReporte.Replace("/", "");
-
-                if (dsReporte3.Tables[0] != null)
-                {
-                    objGenerarReporte.generarReporteGenerico(dsReporte3, nombreReporte);
-                }
-                else
-                {
-                    MessageBox.Show("No existen datos para generar el reporte");
-                }
+                CargarDetalleReporte();
 
             }
             catch (Exception)
             {
-                MessageBox.Show("Error al generar el reporte, por favor compruebe que no este abierto el archivo");
-            }
+
+                MessageBox.Show("Error al generar el reporte");
+            };
         }
-
-        private void CalendarioFechaHasta2_ValueChanged(object sender, EventArgs e)
-        {
-
-        }        
     }
 }

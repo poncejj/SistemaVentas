@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utilitarios;
 
 namespace CapaDatos
 {
@@ -23,32 +24,6 @@ namespace CapaDatos
             try
             {
                 cmd.Parameters.Add(new SqlParameter("@id_venta", SqlDbType.Int)).Value = id_venta;
-                cmd.ExecuteNonQuery();
-
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
-                da.Fill(dsDetalleVenta);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                conect.cerrarConexion();
-            }
-            return dsDetalleVenta;
-        }
-
-        public DataSet consutarTodoDetalleVenta(int idVenta)
-        {
-            conect = new Conexion();
-            dsDetalleVenta = new DataSet();
-            conect.abrirConexion();
-            SqlCommand cmd = new SqlCommand("sp_consultar_todo_detalle_venta", conect.conn);
-            cmd.CommandType = CommandType.StoredProcedure;
-            try
-            {
-                cmd.Parameters.Add(new SqlParameter("@id_venta", SqlDbType.Int)).Value = idVenta;
                 cmd.ExecuteNonQuery();
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -91,7 +66,7 @@ namespace CapaDatos
             return dsDetalleVenta.Tables[0];
         }
 
-        public bool modificarCantidad(int idDetalleVenta, int nuevaCantidad,double precioProducto)
+        public bool modificarCantidad(int idDetalleVenta, int nuevaCantidad,decimal precioProducto)
         {
             conect = new Conexion();
             conect.abrirConexion();
@@ -155,7 +130,7 @@ namespace CapaDatos
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 da.Fill(dsDetalleVenta);
-                ultimoDetalleVenta = int.Parse(dsDetalleVenta.Tables[0].Rows[0][0].ToString());
+                ultimoDetalleVenta = dsDetalleVenta.Tables[0].Rows[0][0].ToString().ToInt();
             }
             catch (Exception)
             {
@@ -168,8 +143,8 @@ namespace CapaDatos
             return ultimoDetalleVenta;
         }
 
-        public bool insertarDetalleVenta(int id_venta, int id_producto, int cantidad, double total,
-            bool estado, int id_paquete, int id_detalle_paquete, int id_color, int id_tamano, double precio,
+        public bool insertarDetalleVenta(int id_venta, int id_producto, int cantidad, decimal total,
+            bool estado, int id_paquete, int id_detalle_paquete, int id_color, int id_tamano, decimal precio,
             string observacion)
         {
             conect = new Conexion();
@@ -205,7 +180,7 @@ namespace CapaDatos
 
         }
 
-        public bool modificarDetalleVenta(int id, int id_venta, int id_producto, int cantidad, double total,
+        public bool modificarDetalleVenta(int id, int id_venta, int id_producto, int cantidad, decimal total,
             bool estado)
         {
             conect = new Conexion();

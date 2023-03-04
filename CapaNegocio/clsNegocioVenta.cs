@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ModeloDatos;
 using CapaDatos;
 using System.Data;
+using Utilitarios;
 
 namespace CapaNegocio
 {
@@ -64,14 +65,46 @@ namespace CapaNegocio
             return objDatosVenta.eliminarVenta(id);
         }
 
-        public DataTable consultarVentasPendientes(string fechaDesde, string fechaHasta, int idReferenciaInterna)
+        public bool cambiarTotal(int id_venta, int id_cliente, decimal total)
         {
-            return objDatosVenta.consultarVentasPendientes(fechaDesde, fechaHasta, idReferenciaInterna);
+            return objDatosVenta.modificarTotalVenta(id_venta, id_cliente,total);
         }
 
-        public bool cambiarTotal(int id, double total)
+        public DataSet ConsultarVentaTodo(string strFechaDesde, string strFechaHasta, int idReferencia)
         {
-            return objDatosVenta.modificarTotalVenta(id,total);
+            clsNegocioReferencia objNegocioReferencia = new clsNegocioReferencia();
+            DataSet dsResultado = new DataSet();
+            DataTable dtTemp = null;
+            if (idReferencia == 0)
+            {
+                DataSet dsReferencia = objNegocioReferencia.comboBoxReferencia();
+                if (dsReferencia != null && dsReferencia.Tables.Count > 0 && dsReferencia.Tables[0].Rows.Count > 0)
+                {
+                    foreach (DataRow drReferencia in dsReferencia.Tables[0].Rows)
+                    {
+                        int idRef = drReferencia[0].ToString().ToInt();
+                        string nombreRef = drReferencia[1].ToString();
+
+                        dtTemp = objDatosVenta.consultarVentasPendientes(0, strFechaDesde, strFechaHasta, idRef).Tables[0].Copy();
+                        if (dtTemp != null && dtTemp.Rows.Count > 0)
+                        {
+                            dtTemp.TableName = nombreRef;
+                            dsResultado.Tables.Add(dtTemp);
+                        }
+
+                    }
+                }
+            }
+            else
+            {
+                dsResultado = objDatosVenta.consultarVentasPendientes(0, strFechaDesde, strFechaHasta, idReferencia);
+            }
+            return dsResultado;
+        }
+
+        public DataSet ConsultarVenta(int idCliente, string strFechaDesde, string strFechaHasta, int idReferencia)
+        {
+            return objDatosVenta.consultarVentasPendientes(idCliente, strFechaDesde, strFechaHasta, idReferencia);
         }
     }
 }

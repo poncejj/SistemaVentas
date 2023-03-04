@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CapaNegocio;
 using ModeloDatos;
+using Utilitarios;
 
 namespace SistemaVentas
 {
@@ -74,7 +75,7 @@ namespace SistemaVentas
         {
             try
             {
-                int idUsuario = int.Parse(cbBusquedaUsuario.SelectedValue.ToString());
+                int idUsuario = cbBusquedaUsuario.SelectedValue.ToString().ToInt();
                 dsUsuario = objNegocioUsuario.consultarUsuario(idUsuario);
 
                 txtIdentificacionUsuario.Text = dsUsuario.Tables[0].Rows[0][3].ToString();
@@ -99,7 +100,7 @@ namespace SistemaVentas
             {
                 if (cbBusquedaUsuario.Items.Count > 0)
                 {
-                    if (objNegocioUsuario.eliminarUsuario(int.Parse(dsUsuario.Tables[0].Rows[index][0].ToString())))
+                    if (objNegocioUsuario.eliminarUsuario(dsUsuario.Tables[0].Rows[index][0].ToString().ToInt()))
                     {
                         MessageBox.Show("Usuario eliminado con exito");
                     }
@@ -133,7 +134,7 @@ namespace SistemaVentas
                     objUsuario.nombre_usuario = txtNombreUsuario.Text;
                     objUsuario.apellido_usuario = txtApellidoUsuario.Text;
                     objUsuario.telefono_usuario = txtTelefonoUsuario.Text;
-                    objUsuario.rol_usuario = int.Parse(cbRolUsuario.SelectedValue.ToString());
+                    objUsuario.rol_usuario = cbRolUsuario.SelectedValue.ToString().ToInt();
                     objUsuario.login_usuario = txtLoginUsuario.Text;
                     objUsuario.contrasenia_usuario = txtContrasena1Usuario.Text;
 
@@ -161,12 +162,12 @@ namespace SistemaVentas
                 if (txtContrasena1Usuario.Text == txtContrasena2Usuario.Text)
                 {
                     clsUsuario objUsuario = new clsUsuario();
-                    objUsuario.id_usuario = int.Parse(dsUsuario.Tables[0].Rows[index][0].ToString());
+                    objUsuario.id_usuario = dsUsuario.Tables[0].Rows[index][0].ToString().ToInt();
                     objUsuario.identificacion_usuario = txtIdentificacionUsuario.Text;
                     objUsuario.nombre_usuario = txtNombreUsuario.Text;
                     objUsuario.apellido_usuario = txtApellidoUsuario.Text;
                     objUsuario.telefono_usuario = txtTelefonoUsuario.Text;
-                    objUsuario.rol_usuario = int.Parse(cbRolUsuario.SelectedValue.ToString());
+                    objUsuario.rol_usuario = cbRolUsuario.SelectedValue.ToString().ToInt();
                     objUsuario.login_usuario = txtLoginUsuario.Text;
                     objUsuario.contrasenia_usuario = txtContrasena1Usuario.Text;
 

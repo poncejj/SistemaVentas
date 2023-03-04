@@ -14,49 +14,33 @@ namespace CapaNegocio
         clsDatosPago objDatosPago = new clsDatosPago();
         clsPago objPago = new clsPago();
 
-        public DataSet consutlarPago(int idVenta)
+        public DataSet consutlarPago(int idCliente)
         {
-            return objDatosPago.consutarPago(idVenta);
+            return objDatosPago.consutarPago(idCliente);
         }
 
-        public bool insertarPago(int idVenta,double valor,int id_cliente,string fechaPago, string tipoPago)
+        public bool insertarPago(decimal valor, int id_cliente, string fechaPago, string tipoPago)
         {
             clsNegocioSaldo objNegocioSaldo = new clsNegocioSaldo();
-            clsSaldo objSaldo = new clsSaldo(); 
- 
-            clsDatosVenta objDatosVenta = new clsDatosVenta();
-            DataSet dsVenta = objDatosVenta.consutarVentaId(idVenta);
-            DataSet dsPago = objDatosPago.consutarPago(idVenta);
-
-            double totalVenta = double.Parse(dsVenta.Tables[0].Rows[0][3].ToString());
-            double totalPagado = 0;
-            foreach (DataRow dr in dsPago.Tables[0].Rows)
-            {
-                totalPagado += double.Parse(dr[1].ToString());
-            }
-
-            if (totalPagado + valor <= totalVenta)
-            {
-                objSaldo.id_cliente = id_cliente;
-                objSaldo.saldo = valor;
-                objNegocioSaldo.cambiarSaldo(objSaldo, 2);
-
-                return objDatosPago.insertarPago(idVenta, valor,fechaPago,tipoPago);
-            }
-            else
+            if(objNegocioSaldo.consultarSaldo(id_cliente) < valor)
             {
                 return false;
             }
+            else
+            {
+                return objDatosPago.insertarPago(id_cliente, valor, fechaPago, tipoPago);
+            }
         }
 
-        public bool modificarPago(int idVenta,double valor)
+        public bool modificarPago(int idCliente, decimal valor)
         {
-            return objDatosPago.modificarPago(idVenta,valor);
+            return objDatosPago.modificarPago(idCliente, valor);
         }
 
-        public bool eliminarPago(int idPago)
+        public bool eliminarPago(int idPago, int idCliente)
         {
-            return objDatosPago.eliminarMarca(idPago);
+            return objDatosPago.eliminarPago(idPago, idCliente);
         }
+
     }
 }

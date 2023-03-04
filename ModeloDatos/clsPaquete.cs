@@ -12,7 +12,7 @@ namespace ModeloDatos
         {
         }
 
-        public clsPaquete(int id_paquete, String fecha_paquete, int id_cliente, double subtotal_paquete, double valor_total_paquete,
+        public clsPaquete(int id_paquete, String fecha_paquete, int id_cliente, decimal subtotal_paquete, decimal valor_total_paquete,
         bool estado_paquete )
         {
             this.id_paquete = id_paquete;
@@ -26,8 +26,8 @@ namespace ModeloDatos
         public int id_paquete { get; set; }
         public string fecha_paquete { get; set; }
         public int id_cliente { get; set; }
-        public double subtotal_paquete { get; set; }
-        public double valor_total_paquete { get; set; }
+        public decimal subtotal_paquete { get; set; }
+        public decimal valor_total_paquete { get; set; }
         public bool estado_paquete { get; set; }
 
     }

@@ -19,24 +19,20 @@ namespace CapaNegocio
             return objDatosDetallePaquete.consutarDetallePaquete(id);
         }
 
-        public DataSet consultarDetallePaqueteLogico(int id)
+        public DataSet consultarDetallePaqueteLogico(int idPaquete)
         {
-            return objDatosDetallePaquete.consutarDetallePaqueteLogico(id);
+            return objDatosDetallePaquete.consutarDetallePaqueteLogico(idPaquete);
         }
 
         
         public bool insertarDetallePaquete(clsDetallePaquete objDetallePaquete)
         {
-            return objDatosDetallePaquete.insertarDetallePaquete(objDetallePaquete.id_paquete,objDetallePaquete.id_producto,
-                objDetallePaquete.cantidad, objDetallePaquete.total_detalle, objDetallePaquete.estado_detalle, objDetallePaquete.id_color, objDetallePaquete.id_tamano,
-                objDetallePaquete.observacion_detalle_paquete);
+            return objDatosDetallePaquete.insertarDetallePaquete(objDetallePaquete);
         }
 
         public bool actualizarDetallePaquete(clsDetallePaquete objDetallePaquete)
         {
-            return objDatosDetallePaquete.modificarDetallePaquete(objDetallePaquete.id_paquete,objDetallePaquete.id_detalle_paquete, objDetallePaquete.id_producto,
-                objDetallePaquete.cantidad, objDetallePaquete.total_detalle, objDetallePaquete.estado_detalle, objDetallePaquete.id_color,objDetallePaquete.id_tamano,
-                objDetallePaquete.observacion_detalle_paquete);
+            return objDatosDetallePaquete.modificarDetallePaquete(objDetallePaquete);
         }
 
         public bool eliminarDetallePaquete(int idPaquete)

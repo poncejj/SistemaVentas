@@ -10,13 +10,13 @@ namespace ModeloDatos
     {
         public int id_saldo { get; set; }
         public int id_cliente { get; set; }
-        public double saldo { get; set; }
+        public decimal saldo { get; set; }
 
         public clsSaldo()
         {
         }
 
-        public clsSaldo(int id_saldo, int id_cliente, double saldo)
+        public clsSaldo(int id_saldo, int id_cliente, decimal saldo)
         {
             this.id_saldo = id_saldo;
             this.id_cliente = id_cliente;

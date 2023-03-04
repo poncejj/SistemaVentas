@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CapaNegocio;
 using ModeloDatos;
+using Utilitarios;
 
 namespace SistemaVentas
 {
@@ -149,15 +150,15 @@ namespace SistemaVentas
                 cbTamanoProducto.DataSource = null;
 
                 DataSet dsProductoTemporal = new DataSet();
-                int codigo = int.Parse(lbProducto.SelectedValue.ToString());
+                int idProducto = lbProducto.SelectedValue.ToString().ToInt();
                 
-                 dsProductoTemporal = objNegocioProducto.consultarProductoId(codigo);
+                 dsProductoTemporal = objNegocioProducto.consultarProductoId(idProducto);
                 String nombre = dsProductoTemporal.Tables[0].Rows[0][1].ToString();
-                double precio = double.Parse(dsProductoTemporal.Tables[0].Rows[0][2].ToString());
-                int categoria = int.Parse(dsProductoTemporal.Tables[0].Rows[0][3].ToString());
-                int marca = int.Parse(dsProductoTemporal.Tables[0].Rows[0][4].ToString());
+                decimal precio = dsProductoTemporal.Tables[0].Rows[0][2].ToString().ToDouble();
+                int idCategoria = dsProductoTemporal.Tables[0].Rows[0][3].ToString().ToInt();
+                int idMarca = dsProductoTemporal.Tables[0].Rows[0][4].ToString().ToInt();
                 bool estado =bool.Parse(dsProductoTemporal.Tables[0].Rows[0][6].ToString());
-                int cantidadDisponible = int.Parse(dsProductoTemporal.Tables[0].Rows[0][7].ToString());
+                int cantidadDisponible = dsProductoTemporal.Tables[0].Rows[0][7].ToString().ToInt();
                 string descripcion = dsProductoTemporal.Tables[0].Rows[0][8].ToString();
                 
                 cantidadProducto.Maximum = 9999;
@@ -165,13 +166,13 @@ namespace SistemaVentas
                 cantidadProducto.Value = cantidadDisponible;
                 
                 txtNombreProducto.Text = nombre;
-                cbMarcaProducto.SelectedValue = marca;
-                llenarCategoria(categoria);
+                cbMarcaProducto.SelectedValue = idMarca;
+                llenarCategoria(idCategoria);
                 txtPrecio.Text = precio.ToString();
                 txtDescripcion.Text = descripcion;
-                cargarComboColor(codigo);
-                cargarComboTamano(codigo);
-                consultarImagen(codigo);
+                cargarComboColor(idProducto);
+                cargarComboTamano(idProducto);
+                consultarImagen(idProducto);
                 
                 if (estado == true)
                 {
@@ -212,7 +213,7 @@ namespace SistemaVentas
             try
             {
                 dsCategoria = objNegocioCategoria.consultarCategoriaId(id);
-                cbCategoriaProducto.SelectedValue = int.Parse(dsCategoria.Tables[0].Rows[0][0].ToString());
+                cbCategoriaProducto.SelectedValue = dsCategoria.Tables[0].Rows[0][0].ToString().ToInt();
 
             }catch(Exception ex)
             {
@@ -230,7 +231,7 @@ namespace SistemaVentas
                 {
                     dsImagen = objNegocioProducto.consultarImagen(id);
                     byte[] imageBuffer = (byte[])dsImagen.Tables[0].Rows[0][2];
-                    idImagen = int.Parse(dsImagen.Tables[0].Rows[0][0].ToString());
+                    idImagen = dsImagen.Tables[0].Rows[0][0].ToString().ToInt();
                     // Se crea un MemoryStream a partir de ese buffer
                     System.IO.MemoryStream ms = new System.IO.MemoryStream(imageBuffer);
                     // Se utiliza el MemoryStream para extraer la imagen
@@ -340,7 +341,7 @@ namespace SistemaVentas
             {
                 if (operacion == 1)
                 {
-                    idProducto = int.Parse(lbProducto.SelectedValue.ToString());
+                    idProducto = lbProducto.SelectedValue.ToString().ToInt();
 
                     DataTable dtColorProducto = objColor.consultarColorProducto(idProducto).Tables[0];
 
@@ -381,7 +382,7 @@ namespace SistemaVentas
             chkLista.DataSource = null;
             if (operacion == 1)
             {
-                int idProducto = int.Parse(lbProducto.SelectedValue.ToString());
+                int idProducto = lbProducto.SelectedValue.ToString().ToInt();
                 DataTable dtTamanoProducto = objTamano.consultarTamanoProducto(idProducto).Tables[0];
 
                 chkLista.DataSource = dtTamano;
@@ -436,7 +437,7 @@ namespace SistemaVentas
             if (result == DialogResult.OK)
             {
                 pbImagenProducto.Image = Image.FromFile(dialog.FileName);
-                int id = int.Parse(lbProducto.SelectedValue.ToString());
+                int id = lbProducto.SelectedValue.ToString().ToInt();
 
                 System.IO.MemoryStream ms = new System.IO.MemoryStream();
                 pbImagenProducto.Image.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
@@ -450,7 +451,7 @@ namespace SistemaVentas
             {
                 if (objNegocioProducto.eliminarImagen(idImagen))
                 {
-                    dsImagen = objNegocioProducto.consultarImagen(int.Parse(lbProducto.SelectedValue.ToString()));
+                    dsImagen = objNegocioProducto.consultarImagen(lbProducto.SelectedValue.ToString().ToInt());
                 }
             }
             catch (Exception)
@@ -470,13 +471,13 @@ namespace SistemaVentas
                     clsNegocioTamano objNegocioTamano = new clsNegocioTamano();
 
                     objProducto.nombre_producto = txtNombreProducto.Text;
-                    objProducto.id_categoria = int.Parse(cbCategoriaProducto.SelectedValue.ToString());
-                    objProducto.id_marca = int.Parse(cbMarcaProducto.SelectedValue.ToString());
+                    objProducto.id_categoria = cbCategoriaProducto.SelectedValue.ToString().ToInt();
+                    objProducto.id_marca = cbMarcaProducto.SelectedValue.ToString().ToInt();
                     if (txtPrecio.Text == "")
                         txtPrecio.Text = "0";
                     else
-                    objProducto.precio_producto = double.Parse(txtPrecio.Text);
-                    objProducto.cantidad = int.Parse(cantidadProducto.Value.ToString());
+                    objProducto.precio_producto = txtPrecio.Text.ToDouble();
+                    objProducto.cantidad = cantidadProducto.Value.ToString().ToInt();
                     objProducto.descripcion = txtDescripcion.Text;
                     if (rbActivo.Checked)
                         objProducto.estado_producto = true;
@@ -527,12 +528,12 @@ namespace SistemaVentas
                 if (operacion == 1)
                 {
                     clsProducto objProducto = new clsProducto();
-                    objProducto.id_producto = int.Parse(lbProducto.SelectedValue.ToString());
+                    objProducto.id_producto = lbProducto.SelectedValue.ToString().ToInt();
                     objProducto.nombre_producto = txtNombreProducto.Text;
-                    objProducto.id_categoria = int.Parse(cbCategoriaProducto.SelectedValue.ToString());
-                    objProducto.id_marca = int.Parse(cbMarcaProducto.SelectedValue.ToString());
-                    objProducto.precio_producto = double.Parse(txtPrecio.Text);
-                    objProducto.cantidad = int.Parse(cantidadProducto.Value.ToString());
+                    objProducto.id_categoria = cbCategoriaProducto.SelectedValue.ToString().ToInt();
+                    objProducto.id_marca = cbMarcaProducto.SelectedValue.ToString().ToInt();
+                    objProducto.precio_producto = txtPrecio.Text.ToDouble();
+                    objProducto.cantidad = cantidadProducto.Value.ToString().ToInt();
                     objProducto.descripcion = txtDescripcion.Text;
                     if (rbActivo.Checked)
                         objProducto.estado_producto = true;
@@ -590,7 +591,7 @@ namespace SistemaVentas
                 if (lbProducto.Items.Count > 0)
                 {
                     limpiarPantalla();
-                    if (objNegocioProducto.eliminarProducto(int.Parse(lbProducto.SelectedValue.ToString())))
+                    if (objNegocioProducto.eliminarProducto(lbProducto.SelectedValue.ToString().ToInt()))
                     {
                         MessageBox.Show("Producto eliminado con exito");
                     }
@@ -626,7 +627,7 @@ namespace SistemaVentas
 
             if (operacion == 1)
             {
-                int idProducto = int.Parse(lbProducto.SelectedValue.ToString());
+                int idProducto = lbProducto.SelectedValue.ToString().ToInt();
 
                 if (idPanel == 0)
                 {
@@ -636,7 +637,7 @@ namespace SistemaVentas
                     {
                         if (chkLista.GetItemChecked(i))
                         {
-                            int idColor = int.Parse(dtColor.Rows[i][0].ToString());
+                            int idColor = dtColor.Rows[i][0].ToString().ToInt();
                             objNegocioColor.insertarColorProducto(idProducto, idColor);
                         }
                     }
@@ -649,7 +650,7 @@ namespace SistemaVentas
                     {
                         if (chkLista.GetItemChecked(i))
                         {
-                            int idTamano = int.Parse(dtTamano.Rows[i][0].ToString());
+                            int idTamano = dtTamano.Rows[i][0].ToString().ToInt();
                             objNegocioTamano.insertarTamanoProducto(idProducto, idTamano);
                         }
                     }
@@ -665,7 +666,7 @@ namespace SistemaVentas
                     {
                         if (chkLista.GetItemChecked(i))
                         {
-                            int idColor = int.Parse(dtColor.Rows[i][0].ToString());
+                            int idColor = dtColor.Rows[i][0].ToString().ToInt();
                             listaColores.Add(idColor);
                         }
                     }
@@ -677,7 +678,7 @@ namespace SistemaVentas
                     {
                         if (chkLista.GetItemChecked(i))
                         {
-                            int idTamano = int.Parse(dtTamano.Rows[i][0].ToString());
+                            int idTamano = dtTamano.Rows[i][0].ToString().ToInt();
                             listaTamanos.Add(idTamano);
                         }
                     }
@@ -731,7 +732,7 @@ namespace SistemaVentas
                 else
                 {
                     bloquear();
-                    int idProduto = int.Parse(lbProducto.SelectedValue.ToString());
+                    int idProduto = lbProducto.SelectedValue.ToString().ToInt();
                     llenarProducto();
                 }
             }
@@ -760,7 +761,7 @@ namespace SistemaVentas
                     {
                         indexImagen = indexImagen + 1;
                         byte[] imageBuffer = (byte[])dsImagen.Tables[0].Rows[indexImagen][2];
-                        idImagen = int.Parse(dsImagen.Tables[0].Rows[indexImagen][0].ToString());
+                        idImagen = dsImagen.Tables[0].Rows[indexImagen][0].ToString().ToInt();
                         // Se crea un MemoryStream a partir de ese buffer
                         System.IO.MemoryStream ms = new System.IO.MemoryStream(imageBuffer);
                         // Se utiliza el MemoryStream para extraer la imagen
@@ -790,7 +791,7 @@ namespace SistemaVentas
                     {
                         indexImagen = indexImagen - 1;
                         byte[] imageBuffer = (byte[])dsImagen.Tables[0].Rows[indexImagen][2];
-                        idImagen = int.Parse(dsImagen.Tables[0].Rows[indexImagen][0].ToString());
+                        idImagen = dsImagen.Tables[0].Rows[indexImagen][0].ToString().ToInt();
                         // Se crea un MemoryStream a partir de ese buffer
                         System.IO.MemoryStream ms = new System.IO.MemoryStream(imageBuffer);
                         // Se utiliza el MemoryStream para extraer la imagen
@@ -880,7 +881,7 @@ namespace SistemaVentas
             }
             else
             {
-                if (Char.IsControl(e.KeyChar) || e.KeyChar == ',') //permitir teclas de control como retroceso
+                if (Char.IsControl(e.KeyChar) || e.KeyChar == '.') //permitir teclas de control como retroceso
                 {
                     e.Handled = false;
                 }

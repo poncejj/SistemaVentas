@@ -1,0 +1,15 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/CapaDatos/obj/Debug
+/Utilitarios/obj/Debug
+/CapaNegocio/obj/Debug
+/SistemaVentas/obj/Debug
+/SistemaVentas/bin/Debug
+/Utilitarios/bin/Debug
+/ModeloDatos/obj/Debug
+/CapaNegocio/bin/Debug
+/CapaDatos/bin/Debug
+/Utilitarios/Properties/AssemblyInfo.cs

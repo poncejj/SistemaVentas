@@ -4,6 +4,7 @@ using System;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
+using Utilitarios;
 
 namespace SistemaVentas
 {
@@ -193,15 +194,15 @@ namespace SistemaVentas
                 cbTamanoProducto.DataSource = null;
 
                 DataSet dsProductoTemporal = new DataSet();
-                int codigo = int.Parse(lbProducto.SelectedValue.ToString());
+                int idProducto = lbProducto.SelectedValue.ToString().ToInt();
 
-                dsProductoTemporal = objNegocioProducto.consultarProductoId(codigo);
+                dsProductoTemporal = objNegocioProducto.consultarProductoId(idProducto);
                 String nombre = dsProductoTemporal.Tables[0].Rows[0][1].ToString();
-                double precio = double.Parse(dsProductoTemporal.Tables[0].Rows[0][2].ToString());
-                int categoria = int.Parse(dsProductoTemporal.Tables[0].Rows[0][3].ToString());
-                int marca = int.Parse(dsProductoTemporal.Tables[0].Rows[0][4].ToString());
+                decimal precio = dsProductoTemporal.Tables[0].Rows[0][2].ToString().ToDouble();
+                int categoria = dsProductoTemporal.Tables[0].Rows[0][3].ToString().ToInt();
+                int marca = dsProductoTemporal.Tables[0].Rows[0][4].ToString().ToInt();
                 bool estado = bool.Parse(dsProductoTemporal.Tables[0].Rows[0][6].ToString());
-                int cantidadDisponible = int.Parse(dsProductoTemporal.Tables[0].Rows[0][7].ToString());
+                int cantidadDisponible = dsProductoTemporal.Tables[0].Rows[0][7].ToString().ToInt();
                 string descripcion = dsProductoTemporal.Tables[0].Rows[0][8].ToString();
                 cantidadProducto.Value = 0;
                 cantidadProducto.Maximum = cantidadDisponible;
@@ -209,10 +210,10 @@ namespace SistemaVentas
                 
                 txtPrecio.Text = precio.ToString();
                 txtDescripcion.Text = descripcion;
-                cargarComboColor(codigo);
-                cargarComboTamano(codigo);
+                cargarComboColor(idProducto);
+                cargarComboTamano(idProducto);
 
-                consultarImagen(codigo);
+                consultarImagen(idProducto);
 
                 if (estado == true)
                 {
@@ -253,7 +254,7 @@ namespace SistemaVentas
             try
             {
                 dsCategoria = objNegocioCategoria.consultarCategoriaId(id);
-                cbCategoriaProducto.SelectedValue = int.Parse(dsCategoria.Tables[0].Rows[0][0].ToString());
+                cbCategoriaProducto.SelectedValue = dsCategoria.Tables[0].Rows[0][0].ToString().ToInt();
 
             }
             catch (Exception ex)
@@ -272,7 +273,7 @@ namespace SistemaVentas
                 {
                     dsImagen = objNegocioProducto.consultarImagen(id);
                     byte[] imageBuffer = (byte[])dsImagen.Tables[0].Rows[0][2];
-                    idImagen = int.Parse(dsImagen.Tables[0].Rows[0][0].ToString());
+                    idImagen = dsImagen.Tables[0].Rows[0][0].ToString().ToInt();
                     // Se crea un MemoryStream a partir de ese buffer
                     System.IO.MemoryStream ms = new System.IO.MemoryStream(imageBuffer);
                     // Se utiliza el MemoryStream para extraer la imagen
@@ -319,8 +320,8 @@ namespace SistemaVentas
             {
                 dsProducto = new DataSet();
                 String busqueda = txtProductoSeleccion.Text;
-                int categoria = int.Parse(cbCategoriaProducto.SelectedValue.ToString());
-                int marca = int.Parse(cbMarcaProducto.SelectedValue.ToString());
+                int categoria = cbCategoriaProducto.SelectedValue.ToString().ToInt();
+                int marca = cbMarcaProducto.SelectedValue.ToString().ToInt();
 
                 dsProducto = objNegocioProducto.consultarProductoActivo(busqueda, categoria, marca);
                 cargarProducto(dsProducto);
@@ -337,8 +338,8 @@ namespace SistemaVentas
             {
                 dsProducto = new DataSet();
                 String busqueda = txtProductoSeleccion.Text;
-                int categoria = int.Parse(cbCategoriaProducto.SelectedValue.ToString());
-                int marca = int.Parse(cbMarcaProducto.SelectedValue.ToString());
+                int categoria = cbCategoriaProducto.SelectedValue.ToString().ToInt();
+                int marca = cbMarcaProducto.SelectedValue.ToString().ToInt();
 
                 dsProducto = objNegocioProducto.consultarProductoActivo(busqueda, categoria, marca);
                 cargarProducto(dsProducto);
@@ -355,8 +356,8 @@ namespace SistemaVentas
             {
                 dsProducto = new DataSet();
                 String busqueda = txtProductoSeleccion.Text;
-                int categoria = int.Parse(cbCategoriaProducto.SelectedValue.ToString());
-                int marca = int.Parse(cbMarcaProducto.SelectedValue.ToString());
+                int categoria = cbCategoriaProducto.SelectedValue.ToString().ToInt();
+                int marca = cbMarcaProducto.SelectedValue.ToString().ToInt();
 
                 dsProducto = objNegocioProducto.consultarProductoActivo(busqueda, categoria, marca);
                 cargarProducto(dsProducto);
@@ -381,6 +382,11 @@ namespace SistemaVentas
             {
                 m_FormDefInstance = value;
             }
+        }
+
+        private void btnFotoAnteriorProducto_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

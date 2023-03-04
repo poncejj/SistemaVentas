@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using ModeloDatos;
 using CapaNegocio;
 using System.Linq;
+using Utilitarios;
 
 namespace SistemaVentas
 {
@@ -14,14 +15,12 @@ namespace SistemaVentas
         clsNegocioDetalleVenta objNegocioDetalleVenta = new clsNegocioDetalleVenta();
         clsNegocioCliente objNegocioCliente = new clsNegocioCliente();
         DataSet dsVenta;
-        DataSet dsDetalleVentaTodo;
         DataTable dtDetalleVentaLogico;
         int tipoPantalla = 0;
         int? idClienteBusqueda = 0;
         int indexCantidad = 0;
         bool flagDesbloquear = false;
-
-
+        int id_cliente = 0;
         public frmVenta(int tipo,int? idCliente)
         {
             InitializeComponent();
@@ -99,14 +98,13 @@ namespace SistemaVentas
             DataSet dsVentaTemporal = new DataSet();
             if (lbVenta.Items.Count > 0)
             {
-                int s = int.Parse(lbVenta.SelectedValue.ToString());
-                dsVentaTemporal = objNegocioVenta.consultarVentaId(s);
+                int idVenta = lbVenta.SelectedValue.ToString().ToInt();
+                dsVentaTemporal = objNegocioVenta.consultarVentaId(idVenta);
 
                 if (dsVentaTemporal.Tables[0].Rows.Count > 0)
                 {
                     txtSubtotalVenta.Text = dsVentaTemporal.Tables[0].Rows[0][3].ToString();
-                    cbEstado.SelectedIndex = int.Parse(dsVentaTemporal.Tables[0].Rows[0][5].ToString());
-                    cargarValorPagado();
+                    cbEstado.SelectedIndex = dsVentaTemporal.Tables[0].Rows[0][5].ToString().ToInt();
                     llenarDetalleVenta();
                 }
             }
@@ -120,23 +118,22 @@ namespace SistemaVentas
         {
             DataSet dsDetalleVenta = new DataSet();
             dtDetalleVentaLogico = new DataTable();
-            dsDetalleVentaTodo = new DataSet();
-            int idVenta = int.Parse(lbVenta.SelectedValue.ToString());
+            int idVenta = lbVenta.SelectedValue.ToString().ToInt();
             dsDetalleVenta = objNegocioDetalleVenta.consultarDetalleVenta(idVenta);
-            dsDetalleVentaTodo = objNegocioDetalleVenta.consultarTodosDetalleVentaes(idVenta);
             dtDetalleVentaLogico = objNegocioDetalleVenta.consultarDetalleVentaLogico(idVenta);
             dgDetalleVenta.DataSource = dsDetalleVenta.Tables[0];
-            dgDetalleVenta.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dgDetalleVenta.Columns[0].Visible = false;
             dgDetalleVenta.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             dgDetalleVenta.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             dgDetalleVenta.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             dgDetalleVenta.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             dgDetalleVenta.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             dgDetalleVenta.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dgDetalleVenta.Columns[7].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
 
             foreach (DataGridViewColumn dc in dgDetalleVenta.Columns)
             {
-                if (dc.Index.Equals(3))
+                if (dc.Index.Equals(4))
                 {
                     dc.ReadOnly = false;
                 }
@@ -145,6 +142,8 @@ namespace SistemaVentas
                     dc.ReadOnly = true;
                 }
             }
+            sumarVenta();
+            objNegocioVenta.cambiarTotal(idVenta, id_cliente, txtSubtotalVenta.Text.ToDouble());
         }
 
         public void llenarVenta()
@@ -164,7 +163,7 @@ namespace SistemaVentas
 
                 if (rbPorCliente.Checked)
                 {
-                    int id_cliente = int.Parse(cbBusquedaClienteVenta.SelectedValue.ToString());
+                    id_cliente = cbBusquedaClienteVenta.SelectedValue.ToString().ToInt();
                     dsVenta = objNegocioVenta.consultarVentaPorCliente(id_cliente);
 
                 }
@@ -175,7 +174,7 @@ namespace SistemaVentas
                 }
                 if (rbPorClienteFecha.Checked)
                 {
-                    int id_cliente = int.Parse(cbBusquedaClienteVenta.SelectedValue.ToString());
+                    id_cliente = cbBusquedaClienteVenta.SelectedValue.ToString().ToInt();
                     String fecha = calendario.Value.ToString("yyyy-MM-dd");
                     dsVenta = objNegocioVenta.consultarVenta(id_cliente, fecha);
                 }
@@ -211,51 +210,29 @@ namespace SistemaVentas
             cbBusquedaClienteVenta.DisplayMember = "nombre_completo";
 
         }
-
-        private void cargarValorPagado()
-        {
-            clsNegocioPago objNegocioPago = new clsNegocioPago();
-            double totalPago = 0;
-            try
-            {
-                if (lbVenta.Items.Count > 0)
-                {
-                    int idVenta = int.Parse(lbVenta.SelectedValue.ToString());
-                    DataSet dsPago = objNegocioPago.consutlarPago(idVenta);
-                    
-                    foreach (DataRow dr in dsPago.Tables[0].Rows)
-                    {
-                        totalPago += double.Parse(dr[1].ToString());
-                    }
-                }
-                txtValorPagado.Text = totalPago.ToString();
-
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-
         private void btnAnular_Click(object sender, EventArgs e)
         {
             clsNegocioVenta objNegocioVenta = new clsNegocioVenta();
             clsNegocioSaldo objNegocioSaldo = new clsNegocioSaldo();
             clsSaldo objSaldo = new clsSaldo();
-
+            clsNegocioProducto objNegocioProducto = new clsNegocioProducto();
             try
             {
                 if (lbVenta.Items.Count > 0)
                 {
-                    int idVenta = int.Parse(lbVenta.SelectedValue.ToString());
-                    int id_cliente = int.Parse(cbBusquedaClienteVenta.SelectedValue.ToString());
+                    int idVenta = lbVenta.SelectedValue.ToString().ToInt();
+                    id_cliente = cbBusquedaClienteVenta.SelectedValue.ToString().ToInt();
 
-                    if (objNegocioVenta.cambiarEstadoVenta(idVenta, 2))
+                    if (objNegocioVenta.cambiarEstadoVenta(idVenta, 1))
                     {
+                        foreach(DataRow dr in dtDetalleVentaLogico.Rows)
+                        {
+                            int idProducto = dr[1].ToString().ToInt();
+                            int cantidad = dr[4].ToString().ToInt();
+                            objNegocioProducto.aumentarCantidad(idProducto, cantidad);
+                        }
+                        objNegocioVenta.cambiarTotal(idVenta, id_cliente, 0);
                         MessageBox.Show("Se anulo correctamente la venta");
-                        objSaldo.id_cliente = id_cliente;
-                        objSaldo.saldo = double.Parse(txtSubtotalVenta.Text);
-                        objNegocioSaldo.cambiarSaldo(objSaldo, 2);
                     }
                     else
                     {
@@ -271,46 +248,12 @@ namespace SistemaVentas
             {
 
             }
-        }
-
-        private void btnPagar_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                int id_cliente = int.Parse(cbBusquedaClienteVenta.SelectedValue.ToString());
-                if (cbEstado.SelectedIndex == 1)
-                {
-                    if (lbVenta.Items.Count > 0)
-                    {
-                        int id = int.Parse(lbVenta.SelectedValue.ToString());
-                        frmPago objPago = new frmPago(id, id_cliente,0);
-                        objPago.ShowDialog();
-                    }
-                    else
-                    {
-                        MessageBox.Show("No existe venta seleccionada para registrar el pago");
-                    }
-                }
-                if (cbEstado.SelectedIndex == 0)
-                {
-                    MessageBox.Show("Venta esta pagada en su totalidad");
-                }
-                if (cbEstado.SelectedIndex == 2)
-                {
-                    MessageBox.Show("Venta anulada, no se pueden realizar pagos");
-
-                }
-            }
-            catch (Exception)
-            {
-
-            }
             finally
             {
-                llenarDatosVenta();
-                cambiarEstado();
+                llenarVenta();
             }
         }
+
 
         private void cbBusquedaClienteVenta_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -326,8 +269,8 @@ namespace SistemaVentas
                 dtDetalle.Columns.Add("Color", typeof(string));
                 dtDetalle.Columns.Add("Tamano", typeof(string));
                 dtDetalle.Columns.Add("Cantidad", typeof(int));
-                dtDetalle.Columns.Add("Precio", typeof(double));
-                dtDetalle.Columns.Add("Total", typeof(double));
+                dtDetalle.Columns.Add("Precio", typeof(decimal));
+                dtDetalle.Columns.Add("Total", typeof(decimal));
                 dtDetalle.Columns.Add("Observacion", typeof(string));
             }
             catch (Exception)
@@ -369,57 +312,49 @@ namespace SistemaVentas
 
         }
 
-        private void cambiarEstado()
+        private void btnDevolver_Click(object sender, EventArgs e)
         {
+            clsNegocioProducto objNegocioProducto = new clsNegocioProducto();
+            int idProducto = 0;
+            int cantidad = 0;
+
             if (lbVenta.Items.Count > 0)
             {
-                int idVenta = int.Parse(lbVenta.SelectedValue.ToString());
-                double valorPagado = double.Parse(txtValorPagado.Text);
-                double valorTotal = double.Parse(txtSubtotalVenta.Text);
-
-                if (cbEstado.SelectedIndex == 1)
+                if(cbEstado.SelectedIndex == 0)
                 {
-                    if (valorPagado == valorTotal)
+                    if (dgDetalleVenta.CurrentCell != null)
                     {
-                        if (objNegocioVenta.cambiarEstadoVenta(idVenta, 0))
+                        int numeroFila = dgDetalleVenta.CurrentCell.RowIndex;
+                        int idDetalle = dgDetalleVenta[0, numeroFila].Value.ToString().ToInt();
+                        foreach(DataRow drDetalle in dtDetalleVentaLogico.Rows)
                         {
-                            llenarDatosVenta();
+                            if(drDetalle[0].ToString().ToInt() == idDetalle)
+                            {
+                                idProducto = drDetalle[1].ToString().ToInt();
+                                cantidad = drDetalle[4].ToString().ToInt();
+                            }
+                        }
+
+                        int idVenta = lbVenta.SelectedValue.ToString().ToInt();
+                        if (objNegocioDetalleVenta.eliminarDetalleVenta(idDetalle, idVenta))
+                        {
+                            objNegocioProducto.aumentarCantidad(idProducto, cantidad);
+
                         }
                         else
                         {
-                            //  MessageBox.Show("Error al registrar el pago");
+                            MessageBox.Show("Error al devoler la prenda de ropa");
                         }
-                    }
-                }
-            }
-            else
-            {
-                //MessageBox.Show("No existen ventas registradas");
-            }
-        }
-
-        private void btnDevolver_Click(object sender, EventArgs e)
-        {
-           if(lbVenta.Items.Count > 0)
-            {
-                if (dgDetalleVenta.CurrentCell != null)
-                {
-                    int numeroFila = dgDetalleVenta.CurrentCell.RowIndex;
-                    int idDetalle = int.Parse(dsDetalleVentaTodo.Tables[0].Rows[numeroFila][0].ToString());
-                    int idVenta = int.Parse(lbVenta.SelectedValue.ToString());
-                    if(objNegocioDetalleVenta.eliminarDetalleVenta(idDetalle,idVenta))
-                    {
-
+                        llenarDatosVenta();
                     }
                     else
                     {
-                        MessageBox.Show("Error al devoler la prenda de ropa");
+                        MessageBox.Show("Por favor seleccione una fila válida");
                     }
-                    llenarDatosVenta();
                 }
                 else
                 {
-                    MessageBox.Show("Por favor seleccione una fila válida");
+                    MessageBox.Show("No se puede eliminar articulos de ventas entregadas ni anuladas");
                 }
             }
             else
@@ -433,7 +368,7 @@ namespace SistemaVentas
 
             if (lbVenta.Items.Count > 0)
             {
-                if (cbEstado.SelectedIndex == 1)
+                if (cbEstado.SelectedIndex == 0)
                 {
                     if (!flagDesbloquear)
                     {
@@ -447,7 +382,7 @@ namespace SistemaVentas
                 }
                 else
                 {
-                    MessageBox.Show("Error: No se puede modificar paquetes vendidos");
+                    MessageBox.Show("Error: No se puede modificar ventas anuladas ni entregadas");
                 }
             }
             else
@@ -458,9 +393,9 @@ namespace SistemaVentas
 
         private void btnGuardar_Click(object sender, EventArgs e)
         {
-            int idVenta = int.Parse(lbVenta.SelectedValue.ToString());
-            double total = double.Parse(txtSubtotalVenta.Text);
-            if (objNegocioVenta.cambiarTotal(idVenta,total))
+            int idVenta = lbVenta.SelectedValue.ToString().ToInt();
+            decimal total = txtSubtotalVenta.Text.ToDouble();
+            if (objNegocioVenta.cambiarTotal(idVenta, id_cliente,total))
             {
                 bloquearPantalla();
             }
@@ -477,8 +412,8 @@ namespace SistemaVentas
             darFormatoDetalle();
             btnModificar.Enabled = true;
             btnGuardar.Enabled = true;
-            btnPagar.Enabled = false;
             btnAnular.Enabled = false;
+            btnEntregar.Enabled = false;
             lbVenta.Enabled = false;
             flagDesbloquear = true;
             btnModificar.Text = "Cancelar";
@@ -489,13 +424,17 @@ namespace SistemaVentas
         {
             foreach (DataGridViewColumn dc in dgDetalleVenta.Columns)
             {
-                if (dc.Index.Equals(3) || dc.Index.Equals(4))
+                if (dc.Index.Equals(4) || dc.Index.Equals(5))
                 {
                     dc.ReadOnly = false;
+                    dc.SortMode = DataGridViewColumnSortMode.NotSortable;
+                    dc.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                 }
                 else
                 {
                     dc.ReadOnly = true;
+                    dc.SortMode = DataGridViewColumnSortMode.NotSortable;
+                    dc.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                 }
             }
         }
@@ -510,110 +449,112 @@ namespace SistemaVentas
             dgDetalleVenta.ReadOnly = true;
             btnModificar.Enabled = true;
             btnGuardar.Enabled = false;
-            btnPagar.Enabled = true;
             btnAnular.Enabled = true;
+            btnEntregar.Enabled = true;
             lbVenta.Enabled = true;
             flagDesbloquear = false;
             btnModificar.Text = "Modificar";
+            darFormatoDetalle();
         }
 
         private void dgDetalleVenta_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            clsNegocioProducto objNegocioProducto = new clsNegocioProducto();
-            string nuevoPrecioTexto = dgDetalleVenta[4, indexCantidad].Value.ToString();
-            string nuevaCantidadTexto = dgDetalleVenta[3, indexCantidad].Value.ToString();
-            int idDetalleVenta = int.Parse(dtDetalleVentaLogico.Rows[indexCantidad][0].ToString());
-            int idProductoLogico = int.Parse(dtDetalleVentaLogico.Rows[indexCantidad][1].ToString());
-            int nuevaCantidad = int.Parse(nuevaCantidadTexto);
-            DataTable dtProducto = dtProducto = objNegocioProducto.consultarProductoId(idProductoLogico).Tables[0];
-            int cantidadProducto = int.Parse(dtProducto.Rows[0][7].ToString());
-            int antiguaCantidad = int.Parse(dtDetalleVentaLogico.Rows[indexCantidad][4].ToString());
-            double precioProducto = double.Parse(dtProducto.Rows[0][2].ToString());
-            decimal nuevoPrecio = decimal.Parse(nuevoPrecioTexto);
+            int idProductoLogico = 0;
+            int nuevaCantidad = 0;
+            DataTable dtProducto = null;
+            int cantidadProducto = 0;
+            int antiguaCantidad = 0;
+            decimal nuevoPrecio = 0;
 
-            if(flagDesbloquear)
+            indexCantidad = e.RowIndex;
+            clsNegocioProducto objNegocioProducto = new clsNegocioProducto();
+            string nuevoPrecioTexto = dgDetalleVenta[5, indexCantidad].Value.ToString();
+            string nuevaCantidadTexto = dgDetalleVenta[4, indexCantidad].Value.ToString();
+            int idDetalleVenta = dgDetalleVenta[0, indexCantidad].Value.ToString().ToInt();
+
+            foreach (DataRow drDetalle in dtDetalleVentaLogico.Rows)
             {
-                if (e.ColumnIndex == 3)
+                if (drDetalle[0].ToString().ToInt() == idDetalleVenta)
                 {
-                    if (nuevaCantidad >= 0)
+                    idProductoLogico = drDetalle[1].ToString().ToInt();
+                    nuevaCantidad = nuevaCantidadTexto.ToInt();
+                    dtProducto = dtProducto = objNegocioProducto.consultarProductoId(idProductoLogico).Tables[0];
+                    cantidadProducto = dtProducto.Rows[0][7].ToString().ToInt();
+                    antiguaCantidad = drDetalle[4].ToString().ToInt();
+                    nuevoPrecio = nuevoPrecioTexto.ToDouble();
+
+                    if (flagDesbloquear)
                     {
-                        if (idProductoLogico != 0)
+                        if (e.ColumnIndex == 4)
                         {
-                            if (antiguaCantidad < nuevaCantidad)
+                            if (nuevaCantidad >= 0)
                             {
-                                if (nuevaCantidad <= antiguaCantidad + cantidadProducto)
+                                if (idProductoLogico != 0)
                                 {
-                                    int cantidad = nuevaCantidad - antiguaCantidad;
-                                    if (objNegocioDetalleVenta.modificarCantidad(idDetalleVenta, nuevaCantidad, precioProducto))
+                                    if (antiguaCantidad < nuevaCantidad)
                                     {
-                                        objNegocioProducto.disminuirCantidad(idProductoLogico, cantidad);
-                                        dtDetalleVentaLogico.Rows[indexCantidad][4] = nuevaCantidad;
-                                        dtDetalleVentaLogico.Rows[indexCantidad][5] = nuevaCantidad * precioProducto;
-                                        dgDetalleVenta[5, indexCantidad].Value = nuevaCantidad * precioProducto;
+                                        if (nuevaCantidad <= antiguaCantidad + cantidadProducto)
+                                        {
+                                            int cantidad = nuevaCantidad - antiguaCantidad;
+                                            if (objNegocioDetalleVenta.modificarCantidad(idDetalleVenta, nuevaCantidad, nuevoPrecio.ToString().ToDouble()))
+                                            {
+                                                objNegocioProducto.disminuirCantidad(idProductoLogico, cantidad);
+                                                drDetalle[4] = nuevaCantidad;
+                                                drDetalle[5] = nuevaCantidad * nuevoPrecio;
+                                                dgDetalleVenta[6, indexCantidad].Value = nuevaCantidad * nuevoPrecio;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show("Cantidad de producto no disponible");
+                                            drDetalle[4] = antiguaCantidad;
+                                            drDetalle[5] = antiguaCantidad * nuevoPrecio;
+                                            dgDetalleVenta[4, indexCantidad].Value = antiguaCantidad;
+                                            return;
+                                        }
+                                    }
+                                    if (antiguaCantidad > nuevaCantidad)
+                                    {
+                                        int cantidad = antiguaCantidad - nuevaCantidad;
+                                        if (objNegocioDetalleVenta.modificarCantidad(idDetalleVenta, nuevaCantidad, nuevoPrecio.ToString().ToDouble()))
+                                        {
+                                            objNegocioProducto.aumentarCantidad(idProductoLogico, cantidad);
+                                            drDetalle[4] = nuevaCantidad;
+                                            drDetalle[5] = nuevaCantidad * nuevoPrecio;
+                                            dgDetalleVenta[6, indexCantidad].Value = nuevaCantidad * nuevoPrecio;
+                                        }
                                     }
                                 }
                                 else
                                 {
-                                    MessageBox.Show("Cantidad de producto no disponible");
-                                    dtDetalleVentaLogico.Rows[indexCantidad][4] = antiguaCantidad;
-                                    dtDetalleVentaLogico.Rows[indexCantidad][5] = antiguaCantidad * precioProducto;
-                                    dgDetalleVenta[3, indexCantidad].Value = antiguaCantidad;
-                                    return;
-                                }
-                            }
-                            if (antiguaCantidad > nuevaCantidad)
-                            {
-                                int cantidad = antiguaCantidad - nuevaCantidad;
-                                if (objNegocioDetalleVenta.modificarCantidad(idDetalleVenta, nuevaCantidad, precioProducto))
-                                {
-                                    objNegocioProducto.aumentarCantidad(idProductoLogico, cantidad);
-                                    dtDetalleVentaLogico.Rows[indexCantidad][4] = nuevaCantidad;
-                                    dtDetalleVentaLogico.Rows[indexCantidad][5] = nuevaCantidad * precioProducto;
-                                    dgDetalleVenta[5, indexCantidad].Value = nuevaCantidad * precioProducto;
+                                    MessageBox.Show("No se puede modificar la cantidad de un producto que no es parte del paquete");
                                 }
                             }
                         }
-                        else
-                        {
-                            MessageBox.Show("No se puede modificar la cantidad de un producto que no es parte del paquete");
-                        }
-                    }
-                }
 
-                if (e.ColumnIndex == 4)
-                {
-                    if (nuevoPrecio >= 0)
-                    {
-                        if (idProductoLogico != 0)
+                        if (e.ColumnIndex == 5)
                         {
-                            if (objNegocioDetalleVenta.modificarPrecio(idDetalleVenta, nuevoPrecio))
+                            if (nuevoPrecio >= 0)
                             {
-                                decimal resultado = antiguaCantidad * nuevoPrecio;
-                                dgDetalleVenta[5, indexCantidad].Value = resultado.ToString();
+                                if (idProductoLogico != 0)
+                                {
+                                    if (objNegocioDetalleVenta.modificarPrecio(idDetalleVenta, nuevoPrecio))
+                                    {
+                                        decimal resultado = antiguaCantidad * nuevoPrecio;
+                                        dgDetalleVenta[6, indexCantidad].Value = resultado.ToString();
+                                    }
+                                    else
+                                        MessageBox.Show("No se puede modificar el precio del producto");
+                                }
                             }
-                            else
-                                MessageBox.Show("No se puede modificar el precio del producto");
                         }
+                        sumarVenta();
                     }
                 }
-                sumarVenta();
             }
         }
-
         private void dgDetallePaquete_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
-
-            if (dgDetalleVenta.CurrentCell.ColumnIndex == 3) //Desired Column
-            {
-                e.Control.KeyPress -= new KeyPressEventHandler(Column3_KeyPress);
-
-                TextBox tb = e.Control as TextBox;
-                if (tb != null)
-                {
-                    tb.KeyPress += new KeyPressEventHandler(Column3_KeyPress);
-                }
-            }
-
 
             if (dgDetalleVenta.CurrentCell.ColumnIndex == 4) //Desired Column
             {
@@ -625,17 +566,29 @@ namespace SistemaVentas
                     tb.KeyPress += new KeyPressEventHandler(Column4_KeyPress);
                 }
             }
+
+
+            if (dgDetalleVenta.CurrentCell.ColumnIndex == 5) //Desired Column
+            {
+                e.Control.KeyPress -= new KeyPressEventHandler(Column5_KeyPress);
+
+                TextBox tb = e.Control as TextBox;
+                if (tb != null)
+                {
+                    tb.KeyPress += new KeyPressEventHandler(Column5_KeyPress);
+                }
+            }
         }
-        private void Column3_KeyPress(object sender, KeyPressEventArgs e)
+        private void Column4_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
             {
                 e.Handled = true;
             }
         }
-        private void Column4_KeyPress(object sender, KeyPressEventArgs e)
+        private void Column5_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != ',')
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '.')
             {
                 e.Handled = true;
             }
@@ -647,24 +600,56 @@ namespace SistemaVentas
         }
         private void sumarVenta()
         {
-            String subtotal = (dgDetalleVenta.Rows.Cast<DataGridViewRow>()
-            .Sum(t => Convert.ToDouble(t.Cells[5].Value))).ToString();
+            string subtotal = string.Empty;
+
+            if (cbEstado.SelectedIndex == 1)
+            {
+                subtotal = "0";
+
+            }
+            else
+            {
+                subtotal = (dgDetalleVenta.Rows.Cast<DataGridViewRow>()
+            .Sum(t => t.Cells[6].Value.ToString().ToDouble())).ToString();
+
+            }
 
             txtSubtotalVenta.Text = subtotal;
         }
 
-        private void btnDetalles_Click(object sender, EventArgs e)
+        private void btnEntregar_Click(object sender, EventArgs e)
         {
+            clsNegocioVenta objNegocioVenta = new clsNegocioVenta();
+            clsNegocioSaldo objNegocioSaldo = new clsNegocioSaldo();
+            clsSaldo objSaldo = new clsSaldo();
+            clsNegocioProducto objNegocioProducto = new clsNegocioProducto();
             try
             {
-                int id_cliente = int.Parse(cbBusquedaClienteVenta.SelectedValue.ToString());
-
-                if (lbVenta.Items.Count > 0)
+                if(lbVenta.Items.Count > 0)
                 {
-                    int id = int.Parse(lbVenta.SelectedValue.ToString());
-                    frmPago objPago = new frmPago(id, id_cliente,1);
-                    objPago.ShowDialog();
+                    if (cbEstado.SelectedIndex == 0)
+                    {
+                        int idVenta = lbVenta.SelectedValue.ToString().ToInt();
+
+                        if (objNegocioVenta.cambiarEstadoVenta(idVenta, 2))
+                        {
+                            MessageBox.Show("Se entrego correctamente la venta");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error al entregar la venta");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("No se puede entregar ventas anuladas o ya entregadas");
+                    }
                 }
+                else
+                {
+                    MessageBox.Show("No existe venta seleccionada para anular");
+                }
+                        
             }
             catch (Exception)
             {
@@ -672,9 +657,10 @@ namespace SistemaVentas
             }
             finally
             {
-                llenarDatosVenta();
-                cambiarEstado();
+                llenarVenta();
             }
         }
+
+        
     }
 }

@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utilitarios;
 
 namespace CapaDatos
 {
@@ -169,7 +170,7 @@ namespace CapaDatos
 
                 if (dsUsuario.Tables[0] != null)
                 {
-                    rol = int.Parse(dsUsuario.Tables[0].Rows[0][0].ToString());
+                    rol = dsUsuario.Tables[0].Rows[0][0].ToString().ToInt();
                 }
                 else
                 {

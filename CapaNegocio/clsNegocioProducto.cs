@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ModeloDatos;
 using CapaDatos;
 using System.Data;
+using Utilitarios;
 
 namespace CapaNegocio
 {
@@ -71,7 +72,7 @@ namespace CapaNegocio
 
             try
             {
-                int cantidadActual = int.Parse(dsProducto.Tables[0].Rows[0][7].ToString());
+                int cantidadActual = dsProducto.Tables[0].Rows[0][7].ToString().ToInt();
                 int cantidadRestante = cantidad + cantidadActual;
 
                 objDatosProducto.modificarCantidadProducto(idProducto,cantidadRestante);
@@ -90,7 +91,7 @@ namespace CapaNegocio
 
             try
             {
-                int cantidadActual = int.Parse(dsProducto.Tables[0].Rows[0][7].ToString());
+                int cantidadActual = dsProducto.Tables[0].Rows[0][7].ToString().ToInt();
                 int cantidadRestante = cantidadActual - cantidad;
                 if (cantidadRestante >= 0)
                 {

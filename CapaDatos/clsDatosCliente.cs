@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utilitarios;
 
 namespace CapaDatos
 {
@@ -191,8 +192,7 @@ namespace CapaDatos
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 da.Fill(dsCliente);
-                string valor = dsCliente.Tables[0].Rows[0][0].ToString();
-                ultimoId = int.Parse(valor);
+                ultimoId = dsCliente.Tables[0].Rows[0][0].ToString().ToInt();
             }
             catch (Exception)
             {

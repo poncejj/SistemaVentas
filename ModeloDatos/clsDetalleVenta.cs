@@ -17,8 +17,8 @@ namespace ModeloDatos
         public int id_venta { get; set; }
         public int id_producto { get; set; }
         public int cantidad { get; set; }
-        public double precio_producto { get; set; }
-        public double total_detalle { get; set; }
+        public decimal precio_producto { get; set; }
+        public decimal total_detalle { get; set; }
         public bool estado_detalle { get; set; }
         public int id_detalle_paquete { get; set; }
         public int id_paquete { get; set; }

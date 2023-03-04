@@ -12,7 +12,7 @@ namespace ModeloDatos
         {
         }
 
-        public clsPago(int idPago,string fecha,int idVenta,double valor)
+        public clsPago(int idPago,string fecha,int idVenta,decimal valor)
         {
             this.idPago = idPago;
             this.fecha = fecha;
@@ -23,6 +23,6 @@ namespace ModeloDatos
         int idPago {get;set;}
         string fecha {get;set;}
         int idVenta {get;set;}
-        double valor { get; set; }
+        decimal valor { get; set; }
     }
 }

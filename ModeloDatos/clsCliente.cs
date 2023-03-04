@@ -38,6 +38,6 @@ namespace ModeloDatos
         public String email_cliente { get; set; }
         public int id_referencia { get; set; }
         public String fecha_registro_cliente { get; set; }
-        public double saldo_cliente { get; set; }
+        public decimal saldo_cliente { get; set; }
     }
 }

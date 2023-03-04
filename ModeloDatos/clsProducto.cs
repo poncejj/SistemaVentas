@@ -12,7 +12,7 @@ namespace ModeloDatos
         {
         }
 
-        public clsProducto(int id_producto, String nombre_producto, double precio_producto, int id_categoria, int id_color,
+        public clsProducto(int id_producto, String nombre_producto, decimal precio_producto, int id_categoria, int id_color,
             int id_marca, int id_tamano, String fecha_registro, bool estado_producto,int cantidad,string descripcion)
         {
             this.id_producto = id_producto;
@@ -31,7 +31,7 @@ namespace ModeloDatos
 
         public int id_producto { get; set; }
         public String nombre_producto { get; set; }
-        public double precio_producto { get; set; }
+        public decimal precio_producto { get; set; }
         public int id_categoria { get; set; }
         public int id_color { get; set; }
         public int id_marca { get; set; }

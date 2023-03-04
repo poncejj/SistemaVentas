@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ModeloDatos;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -39,7 +40,7 @@ namespace CapaDatos
             return dsDetallePaquete;
         }
 
-        public DataSet consutarDetallePaqueteLogico(int id_paquete)
+        public DataSet consutarDetallePaqueteLogico(int idPaquete)
         {
             conect = new Conexion();
             dsDetallePaquete = new DataSet();
@@ -48,7 +49,7 @@ namespace CapaDatos
             cmd.CommandType = CommandType.StoredProcedure;
             try
             {
-                cmd.Parameters.Add(new SqlParameter("@id_paquete", SqlDbType.Int)).Value = id_paquete;
+                cmd.Parameters.Add(new SqlParameter("@id_paquete", SqlDbType.Int)).Value = idPaquete;
                 cmd.ExecuteNonQuery();
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -95,8 +96,7 @@ namespace CapaDatos
             return strObservacionDetalle;
         }
 
-        public bool insertarDetallePaquete(int id_paquete, int id_producto, int cantidad, double total, 
-            bool estado, int id_color,int id_tamano, string observacion )
+        public bool insertarDetallePaquete(clsDetallePaquete objDetallePaquete)
         {
             conect = new Conexion();
             conect.abrirConexion();
@@ -104,14 +104,15 @@ namespace CapaDatos
             cmd.CommandType = CommandType.StoredProcedure;
             try
             {
-                cmd.Parameters.Add(new SqlParameter("@id_paquete", SqlDbType.Int)).Value = id_paquete;
-                cmd.Parameters.Add(new SqlParameter("@id_producto", SqlDbType.Int)).Value = id_producto;
-                cmd.Parameters.Add(new SqlParameter("@cantidad", SqlDbType.Int)).Value = cantidad;
-                cmd.Parameters.Add(new SqlParameter("@total", SqlDbType.Money)).Value = total;
-                cmd.Parameters.Add(new SqlParameter("@estado", SqlDbType.Bit)).Value = estado;
-                cmd.Parameters.Add(new SqlParameter("@id_color", SqlDbType.Int)).Value = id_color;
-                cmd.Parameters.Add(new SqlParameter("@id_tamano", SqlDbType.Int)).Value = id_tamano;                
-                cmd.Parameters.Add(new SqlParameter("@observacion_detalle", SqlDbType.VarChar)).Value = observacion;                
+                cmd.Parameters.Add(new SqlParameter("@id_paquete", SqlDbType.Int)).Value = objDetallePaquete.id_paquete;
+                cmd.Parameters.Add(new SqlParameter("@id_producto", SqlDbType.Int)).Value = objDetallePaquete.id_producto;
+                cmd.Parameters.Add(new SqlParameter("@cantidad", SqlDbType.Int)).Value = objDetallePaquete.cantidad;
+                cmd.Parameters.Add(new SqlParameter("@total", SqlDbType.Money)).Value = objDetallePaquete.total_detalle;
+                cmd.Parameters.Add(new SqlParameter("@estado", SqlDbType.Bit)).Value = objDetallePaquete.estado_detalle;
+                cmd.Parameters.Add(new SqlParameter("@id_color", SqlDbType.Int)).Value = objDetallePaquete.id_color;
+                cmd.Parameters.Add(new SqlParameter("@id_tamano", SqlDbType.Int)).Value = objDetallePaquete.id_tamano;                
+                cmd.Parameters.Add(new SqlParameter("@observacion_detalle", SqlDbType.VarChar)).Value = objDetallePaquete.observacion_detalle_paquete;                
+                cmd.Parameters.Add(new SqlParameter("@precio_producto", SqlDbType.Money)).Value = objDetallePaquete.precio_producto;                
                 cmd.ExecuteNonQuery();
 
                 return true;
@@ -127,8 +128,7 @@ namespace CapaDatos
 
         }
 
-        public bool modificarDetallePaquete( int id_paquete,int id_detalle, int id_producto, int cantidad, double total,
-            bool estado, int id_color,int id_tamano, string observacion)
+        public bool modificarDetallePaquete(clsDetallePaquete objDetallePaquete)
         {
             conect = new Conexion();
             conect.abrirConexion();
@@ -136,15 +136,16 @@ namespace CapaDatos
             cmd.CommandType = CommandType.StoredProcedure;
             try
             {
-                cmd.Parameters.Add(new SqlParameter("@id_detalle", SqlDbType.Int)).Value = id_detalle;
-                cmd.Parameters.Add(new SqlParameter("@id_paquete", SqlDbType.Int)).Value = id_paquete;
-                cmd.Parameters.Add(new SqlParameter("@id_producto", SqlDbType.Int)).Value = id_producto;
-                cmd.Parameters.Add(new SqlParameter("@cantidad", SqlDbType.Int)).Value = cantidad;
-                cmd.Parameters.Add(new SqlParameter("@total", SqlDbType.Money)).Value = total;
-                cmd.Parameters.Add(new SqlParameter("@estado", SqlDbType.Bit)).Value = estado;
-                cmd.Parameters.Add(new SqlParameter("@id_color", SqlDbType.Int)).Value = id_color;
-                cmd.Parameters.Add(new SqlParameter("@id_tamano", SqlDbType.Int)).Value = id_tamano;
-                cmd.Parameters.Add(new SqlParameter("@observacion_detalle", SqlDbType.VarChar)).Value = observacion;
+                cmd.Parameters.Add(new SqlParameter("@id_detalle", SqlDbType.Int)).Value = objDetallePaquete.id_detalle_paquete;
+                cmd.Parameters.Add(new SqlParameter("@id_paquete", SqlDbType.Int)).Value = objDetallePaquete.id_paquete;
+                cmd.Parameters.Add(new SqlParameter("@id_producto", SqlDbType.Int)).Value = objDetallePaquete.id_producto;
+                cmd.Parameters.Add(new SqlParameter("@cantidad", SqlDbType.Int)).Value = objDetallePaquete.cantidad;
+                cmd.Parameters.Add(new SqlParameter("@total", SqlDbType.Money)).Value = objDetallePaquete.total_detalle;
+                cmd.Parameters.Add(new SqlParameter("@estado", SqlDbType.Bit)).Value = objDetallePaquete.estado_detalle;
+                cmd.Parameters.Add(new SqlParameter("@id_color", SqlDbType.Int)).Value = objDetallePaquete.id_color;
+                cmd.Parameters.Add(new SqlParameter("@id_tamano", SqlDbType.Int)).Value = objDetallePaquete.id_tamano;
+                cmd.Parameters.Add(new SqlParameter("@observacion_detalle", SqlDbType.VarChar)).Value = objDetallePaquete.observacion_detalle_paquete;
+                cmd.Parameters.Add(new SqlParameter("@precio_producto", SqlDbType.Money)).Value = objDetallePaquete.precio_producto;
                 cmd.ExecuteNonQuery();
 
                 return true;

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CapaNegocio;
 using ModeloDatos;
+using Utilitarios;
 
 namespace SistemaVentas
 {
@@ -82,7 +83,7 @@ namespace SistemaVentas
             try
             {
                 DataSet dsCategoriaTemporal = new DataSet();
-                int codigo = int.Parse(lbCategoria.SelectedValue.ToString());
+                int codigo = lbCategoria.SelectedValue.ToString().ToInt();
                 dsCategoriaTemporal = objNegocioCategoria.consultarCategoriaId(codigo);
                 String nombre = dsCategoriaTemporal.Tables[0].Rows[0][1].ToString();
                 String descripcion = dsCategoriaTemporal.Tables[0].Rows[0][2].ToString();
@@ -128,7 +129,7 @@ namespace SistemaVentas
             {
                 if (lbCategoria.Items.Count > 0)
                 {
-                    if (objNegocioCategoria.eliminarCategoria(int.Parse(lbCategoria.SelectedValue.ToString())))
+                    if (objNegocioCategoria.eliminarCategoria(lbCategoria.SelectedValue.ToString().ToInt()))
                     {
                         MessageBox.Show("Categoria eliminada con exito");
                     }
@@ -157,7 +158,7 @@ namespace SistemaVentas
                 if (lbCategoria.Items.Count > 0)
                 {
                     clsCategoria objCategoria = new clsCategoria();
-                    objCategoria.id_categoria = int.Parse(lbCategoria.SelectedValue.ToString());
+                    objCategoria.id_categoria = lbCategoria.SelectedValue.ToString().ToInt();
                     objCategoria.nombre_categoria = txtNombreCategoria.Text;
                     objCategoria.descripcion_categoria = txtDescripcionCategoria.Text;
                    
@@ -271,7 +272,7 @@ namespace SistemaVentas
             try
             {
                 DataSet dsColorTemporal = new DataSet();
-                int codigo = int.Parse(lbColor.SelectedValue.ToString());
+                int codigo = lbColor.SelectedValue.ToString().ToInt();
                 dsColorTemporal = objNegocioColor.consultarColorId(codigo);
                 String nombre = dsColorTemporal.Tables[0].Rows[0][1].ToString();
                 txtNombreColor.Text = nombre;
@@ -308,7 +309,7 @@ namespace SistemaVentas
             {
                 if (lbColor.Items.Count > 0)
                 {
-                    if (objNegocioColor.eliminarColor(int.Parse(lbColor.SelectedValue.ToString())))
+                    if (objNegocioColor.eliminarColor(lbColor.SelectedValue.ToString().ToInt()))
                     {
                         MessageBox.Show("Color eliminada con exito");
                     }
@@ -337,7 +338,7 @@ namespace SistemaVentas
                 if (lbColor.Items.Count > 0)
                 {
                     clsColor objColor = new clsColor();
-                    objColor.id_color = int.Parse(lbColor.SelectedValue.ToString());
+                    objColor.id_color = lbColor.SelectedValue.ToString().ToInt();
                     objColor.nombre_color = txtNombreColor.Text;
                     if (objNegocioColor.actualizarColor(objColor))
                     {
@@ -441,7 +442,7 @@ namespace SistemaVentas
             try
             {
                 DataSet dsTamanoTemporal = new DataSet();
-                int codigo = int.Parse(lbTamano.SelectedValue.ToString());
+                int codigo = lbTamano.SelectedValue.ToString().ToInt();
                 dsTamanoTemporal = objNegocioTamano.consultarTamanoId(codigo);
                 String nombre = dsTamanoTemporal.Tables[0].Rows[0][1].ToString();
                 String letra = dsTamanoTemporal.Tables[0].Rows[0][2].ToString();
@@ -480,7 +481,7 @@ namespace SistemaVentas
             {
                 if (lbTamano.Items.Count > 0)
                 {
-                    if (objNegocioTamano.eliminarTamano(int.Parse(lbTamano.SelectedValue.ToString())))
+                    if (objNegocioTamano.eliminarTamano(lbTamano.SelectedValue.ToString().ToInt()))
                     {
                         MessageBox.Show("Tamano eliminada con exito");
                     }
@@ -509,7 +510,7 @@ namespace SistemaVentas
                 if (lbTamano.Items.Count > 0)
                 {
                     clsTamano objTamano = new clsTamano();
-                    objTamano.id_tamano = int.Parse(lbTamano.SelectedValue.ToString());
+                    objTamano.id_tamano = lbTamano.SelectedValue.ToString().ToInt();
                     objTamano.nombre_tamano = txtNombreTamano.Text;
                     objTamano.letra_tamano = txtLetraTamano.Text;
                     if (objNegocioTamano.actualizarTamano(objTamano))
@@ -615,7 +616,7 @@ namespace SistemaVentas
             try
             {
                 DataSet dsMarcaTemporal = new DataSet();
-                int codigo = int.Parse(lbMarca.SelectedValue.ToString());
+                int codigo = lbMarca.SelectedValue.ToString().ToInt();
                 dsMarcaTemporal = objNegocioMarca.consultarMarcaId(codigo);
                 String nombre = dsMarcaTemporal.Tables[0].Rows[0][1].ToString();
                 String pais = dsMarcaTemporal.Tables[0].Rows[0][2].ToString();
@@ -654,7 +655,7 @@ namespace SistemaVentas
             {
                 if (lbMarca.Items.Count>0)
                 {
-                    if (objNegocioMarca.eliminarMarca(int.Parse(lbMarca.SelectedValue.ToString())))
+                    if (objNegocioMarca.eliminarMarca(lbMarca.SelectedValue.ToString().ToInt()))
                     {
                         MessageBox.Show("Marca eliminada con exito");
                     }
@@ -683,7 +684,7 @@ namespace SistemaVentas
                 if (lbMarca.Items.Count > 0)
                 {
                     clsMarca objMarca = new clsMarca();
-                    objMarca.id_marca = int.Parse(lbMarca.SelectedValue.ToString());
+                    objMarca.id_marca = lbMarca.SelectedValue.ToString().ToInt();
                     objMarca.nombre_marca = txtNombreMarca.Text;
                     objMarca.pais_marca = txtPais.Text;
                     if (objNegocioMarca.actualizarMarca(objMarca))
@@ -789,7 +790,7 @@ namespace SistemaVentas
             try
             {
                 DataSet dsReferenciaTemporal = new DataSet();
-                int codigo = int.Parse(lbReferencia.SelectedValue.ToString());
+                int codigo = lbReferencia.SelectedValue.ToString().ToInt();
                 dsReferenciaTemporal = objNegocioReferencia.consultarReferenciaId(codigo);
                 String nombre = dsReferenciaTemporal.Tables[0].Rows[0][1].ToString();
                 txtNombreReferencia.Text = nombre;
@@ -826,7 +827,7 @@ namespace SistemaVentas
             {
                 if (lbReferencia.Items.Count > 0)
                 {
-                    if (objNegocioReferencia.eliminarReferencia(int.Parse(lbReferencia.SelectedValue.ToString())))
+                    if (objNegocioReferencia.eliminarReferencia(lbReferencia.SelectedValue.ToString().ToInt()))
                     {
                         MessageBox.Show("Referencia eliminada con exito");
                     }
@@ -855,7 +856,7 @@ namespace SistemaVentas
                 if (lbReferencia.Items.Count > 0)
                 {
                     clsReferencia objReferencia = new clsReferencia();
-                    objReferencia.id_referencia = int.Parse(lbReferencia.SelectedValue.ToString());
+                    objReferencia.id_referencia = lbReferencia.SelectedValue.ToString().ToInt();
                     objReferencia.nombre_referencia = txtNombreReferencia.Text;
                     if (objNegocioReferencia.actualizarReferencia(objReferencia))
                     {

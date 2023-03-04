@@ -19,11 +19,6 @@ namespace CapaNegocio
             return objDatosDetalleVenta.consutarDetalleVenta(id);
         }
 
-        public DataSet consultarTodosDetalleVentaes(int idVenta)
-        {
-            return objDatosDetalleVenta.consutarTodoDetalleVenta(idVenta);
-        }
-
         public bool insertarDetalleVenta(clsDetalleVenta objDetalleVenta)
         {
             return objDatosDetalleVenta.insertarDetalleVenta(objDetalleVenta.id_venta, objDetalleVenta.id_producto,
@@ -55,10 +50,10 @@ namespace CapaNegocio
 
         public bool modificarPrecio(int idDetalleVenta, decimal nuevoPrecio)
         {
-            return objDatosDetalleVenta.modificarPrecio(idDetalleVenta,nuevoPrecio);
+            return objDatosDetalleVenta.modificarPrecio(idDetalleVenta, nuevoPrecio);
         }
 
-        public bool modificarCantidad(int idDetalleVenta, int nuevaCantidad, double precioProducto)
+        public bool modificarCantidad(int idDetalleVenta, int nuevaCantidad, decimal precioProducto)
         {
             return objDatosDetalleVenta.modificarCantidad(idDetalleVenta,nuevaCantidad,precioProducto);
         }

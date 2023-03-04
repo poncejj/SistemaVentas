@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utilitarios;
 
 namespace CapaDatos
 {
@@ -144,7 +145,7 @@ namespace CapaDatos
             return dsPaquete;
         }
 
-        public bool insertarPaquete(String fecha, int id_cliente, double subtotal, double total, bool estado)
+        public bool insertarPaquete(String fecha, int id_cliente, decimal subtotal, decimal total, bool estado)
         {
             conect = new Conexion();
             conect.abrirConexion();
@@ -172,7 +173,7 @@ namespace CapaDatos
 
         }
 
-        public bool modificarPaquete(int id, String fecha, int id_cliente, double subtotal, double total, bool estado)
+        public bool modificarPaquete(int id, String fecha, int id_cliente, decimal subtotal, decimal total, bool estado)
         {
             conect = new Conexion();
             conect.abrirConexion();
@@ -240,7 +241,7 @@ namespace CapaDatos
 
                 if (dsPaquete.Tables[0].Rows.Count > 0)
                 {
-                    idRetorno = int.Parse(dsPaquete.Tables[0].Rows[0][0].ToString());
+                    idRetorno = dsPaquete.Tables[0].Rows[0][0].ToString().ToInt();
                 }
             }
             catch (Exception)
@@ -254,34 +255,29 @@ namespace CapaDatos
             return idRetorno;
         }
 
-        public DataTable consultarPaquetesPendientes(string fechaDesde, string fechaHasta, int idReferenciaInterna, int tipo)
+        public DataSet consultarPaquetes(int idCliente, string fechaDesde, string fechaHasta, int idReferencia)
         {
             SqlCommand cmd;
             conect = new Conexion();
             dsPaquete = new DataSet();
             DataTable dtPaquete = new DataTable();
             conect.abrirConexion();
-            if (tipo == 1)
-            {
-                cmd = new SqlCommand("sp_consultar_paquetes_entregados", conect.conn);
-            }
-            else
-            {
-                cmd = new SqlCommand("sp_consultar_paquetes_pendientes", conect.conn);
-            }
+            cmd = new SqlCommand("sp_consultar_paquetes_entregados", conect.conn);
+
             cmd.CommandType = CommandType.StoredProcedure;
             try
             {
 
                 cmd.Parameters.Add(new SqlParameter("@fecha_desde", SqlDbType.VarChar)).Value = fechaDesde;
                 cmd.Parameters.Add(new SqlParameter("@fecha_hasta", SqlDbType.VarChar)).Value = fechaHasta;
-                cmd.Parameters.Add(new SqlParameter("@id_referencia", SqlDbType.Int)).Value = idReferenciaInterna;
+                cmd.Parameters.Add(new SqlParameter("@id_cliente", SqlDbType.Int)).Value = idCliente;
+                cmd.Parameters.Add(new SqlParameter("@id_referencia", SqlDbType.Int)).Value = idReferencia;
 
                 cmd.ExecuteNonQuery();
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 da.Fill(dsPaquete);
-                dtPaquete = dsPaquete.Tables[0].Copy();
+                return dsPaquete;
             }
             catch (Exception)
             {
@@ -291,7 +287,6 @@ namespace CapaDatos
             {
                 conect.cerrarConexion();
             }
-            return dtPaquete;
         }
 
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using Utilitarios;
 
 namespace CapaDatos
 {
@@ -87,7 +88,7 @@ namespace CapaDatos
             return dsProducto;
         }
 
-        public bool insertarProducto(String nombre, double precio, int id_categoria, int id_marca, 
+        public bool insertarProducto(String nombre, decimal precio, int id_categoria, int id_marca, 
             bool estado,int cantidad,string descripcion)
         {
             conect = new Conexion();
@@ -119,7 +120,7 @@ namespace CapaDatos
 
         }
 
-        public bool modificarProducto(int id,String nombre, double precio, int id_categoria, int id_marca, 
+        public bool modificarProducto(int id,String nombre, decimal precio, int id_categoria, int id_marca, 
             bool estado,int cantidad,string descripcion)
         {
             conect = new Conexion();
@@ -314,7 +315,7 @@ namespace CapaDatos
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 da.Fill(dsProducto);
 
-                ultimoId = int.Parse(dsProducto.Tables[0].Rows[0][0].ToString());
+                ultimoId = dsProducto.Tables[0].Rows[0][0].ToString().ToInt();
 
             }
             catch (Exception)

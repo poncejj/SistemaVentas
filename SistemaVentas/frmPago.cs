@@ -8,19 +8,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CapaNegocio;
+using Utilitarios;
 
 namespace SistemaVentas
 {
     public partial class frmPago : Form
     {
-        int idVenta = 0;
         int idCliente = 0;
         int tipoPantalla = 0;
-        public frmPago(int venta,int id_cliente,int tipo)
+        DataSet dsPagos = null;
+        public frmPago(int id_cliente,int tipo)
         {
             InitializeComponent();
-            idVenta = venta;
-            id_cliente = idCliente;
+            idCliente = id_cliente;
             tipoPantalla = tipo;
             bloquear();
         }
@@ -35,7 +35,7 @@ namespace SistemaVentas
             }
             else
             {
-                if (Char.IsControl(e.KeyChar) || e.KeyChar == ',') //permitir teclas de control como retroceso
+                if (Char.IsControl(e.KeyChar) || e.KeyChar == '.') //permitir teclas de control como retroceso
                 {
                     e.Handled = false;
                 }
@@ -51,11 +51,9 @@ namespace SistemaVentas
         {
             try
             {
-                double valor = 0;
                 clsNegocioPago objNegocioPago = new clsNegocioPago();
                 if (txtValor.Text != "")
                 {
-                    valor = double.Parse(txtValor.Text);
                     string fechaPago = calFecha.Value.ToString("yyyy-MM-dd"); ;
                     string tipoPago = "";
 
@@ -71,14 +69,17 @@ namespace SistemaVentas
                     {
                         tipoPago = "Cheque";
                     }
-                    if (objNegocioPago.insertarPago(idVenta, valor,idCliente,fechaPago, tipoPago))
+                    if (rbDescuento.Checked)
+                    {
+                        tipoPago = "Descuento";
+                    }
+                    if (objNegocioPago.insertarPago(txtValor.Text.ToDouble(), idCliente,fechaPago, tipoPago))
                     {
                         this.Close();
-
                     }
                     else
                     {
-                        MessageBox.Show("Valor ingresado es incorrecto");
+                        MessageBox.Show("Valor es mayor al saldo del cliente o es incorrecto");
                     }
                 }
             }
@@ -96,8 +97,9 @@ namespace SistemaVentas
             clsNegocioPago objNegocioPago = new clsNegocioPago();
             try
             {
-                DataSet dsPagos = objNegocioPago.consutlarPago(idVenta);
+                dsPagos = objNegocioPago.consutlarPago(idCliente);
                 dgPagos.DataSource = dsPagos.Tables[0];
+                dgPagos.Columns[0].Visible = false;
             }
             catch(Exception)
             {
@@ -114,7 +116,7 @@ namespace SistemaVentas
         {
             txtTotalPagado.Text = "0";
             String totalPagado = (dgPagos.Rows.Cast<DataGridViewRow>()
-            .Sum(t => double.Parse(t.Cells[1].Value.ToString()))).ToString();
+            .Sum(t => t.Cells[2].Value.ToString().ToDouble())).ToString();
             txtTotalPagado.Text = totalPagado;
 
         }
@@ -134,10 +136,44 @@ namespace SistemaVentas
                 rbCheque.Visible = false;
                 rbDeposito.Visible = false;
                 rbEfectivo.Visible = false;
+                rbDescuento.Visible = false;
                 btnGuardar.Visible = false;
+                btnAnular.Visible = true;
                 calFecha.Visible = false;
                 dgPagos.Location = new Point(19, 35);
                 dgPagos.Size = new Size(393,133); 
+            }
+        }
+
+        private void btnAnular_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                clsNegocioPago objNegocioPago = new clsNegocioPago();
+
+                if (dgPagos.Rows.Count > 0)
+                {
+                    DialogResult dialogResult = MessageBox.Show("¿Está seguro que desea eliminar el pago?", "Aterta", MessageBoxButtons.YesNo);
+                    if (dialogResult == DialogResult.Yes)
+                    {
+                        int idPago = dsPagos.Tables[0].Rows[dgPagos.CurrentCell.RowIndex][0].ToString().ToInt();
+                        if (objNegocioPago.eliminarPago(idPago, idCliente))
+                        {
+                            cargarPagos();
+                            totalizar();
+                        }
+                    }
+                    
+                }
+                else
+                {
+                    MessageBox.Show("No existen pagos para eliminar");
+                }
+            }
+            catch (Exception)
+            {
+
+                MessageBox.Show("Error al anular el pago");
             }
         }
     }

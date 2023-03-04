@@ -12,7 +12,7 @@ namespace ModeloDatos
         int cantidad { get; set; }
         int color { get; set; }
         int tamano { get; set; }
-        double precio { get; set; }
-        double total { get; set; }
+        decimal precio { get; set; }
+        decimal total { get; set; }
     }
 }

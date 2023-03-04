@@ -13,3 +13,15 @@ C:\@TFS\SistemaVentas\CapaDatos\bin\Debug\CapaDatos.pdb
 C:\@TFS\SistemaVentas\CapaDatos\obj\Debug\CapaDatos.dll
 C:\@TFS\SistemaVentas\CapaDatos\obj\Debug\CapaDatos.pdb
 C:\@TFS\SistemaVentas\CapaDatos\obj\Debug\CapaDatos.csprojResolveAssemblyReference.cache
+C:\Users\USER\Source\Repos\SistemaVentas\CapaDatos\bin\Debug\CapaDatos.dll
+C:\Users\USER\Source\Repos\SistemaVentas\CapaDatos\bin\Debug\CapaDatos.pdb
+C:\Users\USER\Source\Repos\SistemaVentas\CapaDatos\bin\Debug\ModeloDatos.dll
+C:\Users\USER\Source\Repos\SistemaVentas\CapaDatos\bin\Debug\Utilitarios.dll
+C:\Users\USER\Source\Repos\SistemaVentas\CapaDatos\bin\Debug\DocumentFormat.OpenXml.dll
+C:\Users\USER\Source\Repos\SistemaVentas\CapaDatos\bin\Debug\ModeloDatos.pdb
+C:\Users\USER\Source\Repos\SistemaVentas\CapaDatos\bin\Debug\Utilitarios.pdb
+C:\Users\USER\Source\Repos\SistemaVentas\CapaDatos\obj\Debug\CapaDatos.csproj.AssemblyReference.cache
+C:\Users\USER\Source\Repos\SistemaVentas\CapaDatos\obj\Debug\CapaDatos.csproj.CoreCompileInputs.cache
+C:\Users\USER\Source\Repos\SistemaVentas\CapaDatos\obj\Debug\CapaDatos.csproj.CopyComplete
+C:\Users\USER\Source\Repos\SistemaVentas\CapaDatos\obj\Debug\CapaDatos.dll
+C:\Users\USER\Source\Repos\SistemaVentas\CapaDatos\obj\Debug\CapaDatos.pdb

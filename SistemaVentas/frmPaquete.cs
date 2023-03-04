@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CapaNegocio;
 using ModeloDatos;
+using Utilitarios;
 
 namespace SistemaVentas
 {
@@ -52,7 +53,8 @@ namespace SistemaVentas
 
         private void calendarioPaquete_ValueChanged(object sender, EventArgs e)
         {
-            llenarPaquete();
+            if(rbPorClienteFecha.Checked || rbPorFecha.Checked)
+                llenarPaquete();
         }
 
         private void lbPaquete_SelectedIndexChanged(object sender, EventArgs e)
@@ -84,25 +86,15 @@ namespace SistemaVentas
                     string producto = dsProducto.Tables[0].Rows[0][1].ToString();
                     string color = dsColor.Tables[0].Rows[0][1].ToString();
                     string tamano = dsTamano.Tables[0].Rows[0][1].ToString();
-                    double precio = double.Parse(dsProducto.Tables[0].Rows[0][2].ToString());
+                    decimal precio = dsProducto.Tables[0].Rows[0][2].ToString().ToDouble();
                     int cantidad = lista[index].cantidad;
-                    double total = lista[index].cantidad * precio;
+                    decimal total = lista[index].cantidad * precio;
                     bool estado = lista[index].estado_detalle;
                     string observacion = lista[index].observacion_detalle_paquete;
 
 
                     if (objNegocioProducto.disminuirCantidad(idProducto, cantidad))
                     {
-                        DataRow fila = dtDetallePaquete.NewRow();
-                        fila[0] = producto;
-                        fila[1] = color;
-                        fila[2] = tamano;
-                        fila[3] = lista[index].cantidad;
-                        fila[4] = precio;
-                        fila[5] = total;
-                        fila[6] = estado;
-                        dtDetallePaquete.Rows.Add(fila);
-
                         DataRow filaLogica = dtDetallePaqueteLogico.NewRow();
 
                         filaLogica[0] = 0;
@@ -113,8 +105,20 @@ namespace SistemaVentas
                         filaLogica[5] = total;
                         filaLogica[6] = estado;
                         filaLogica[7] = observacion;
+                        filaLogica[8] = precio;
 
                         dtDetallePaqueteLogico.Rows.Add(filaLogica);
+
+                        DataRow fila = dtDetallePaquete.NewRow();
+                        fila[0] = 0;
+                        fila[1] = producto;
+                        fila[2] = color;
+                        fila[3] = tamano;
+                        fila[4] = lista[index].cantidad;
+                        fila[5] = precio;
+                        fila[6] = total;
+                        fila[7] = estado;
+                        dtDetallePaquete.Rows.Add(fila);
 
                         dgDetallePaquete.DataSource = dtDetallePaquete;
 
@@ -163,9 +167,8 @@ namespace SistemaVentas
             DataSet dsPaqueteTemporal = new DataSet();
             try
             {
-                int s = int.Parse(lbPaquete.SelectedValue.ToString());
-                dsPaqueteTemporal = objNegocioPaquete.consultarPaqueteId(s);
-
+                int idPaquete = lbPaquete.SelectedValue.ToString().ToInt();
+                dsPaqueteTemporal = objNegocioPaquete.consultarPaqueteId(idPaquete);
 
                 if (dsPaqueteTemporal.Tables[0].Rows.Count > 0)
                 {
@@ -178,6 +181,8 @@ namespace SistemaVentas
                     {
                         cbEstadoPaquete.SelectedIndex = 1;
                     }
+                    if (rbPorCliente.Checked)
+                        calendarioPaquete.Text = dsPaqueteTemporal.Tables[0].Rows[0][1].ToString();
 
                     llenarDetallePaquete();
                 }
@@ -195,18 +200,18 @@ namespace SistemaVentas
             generarDataTableLogicoTemporal();
             try
             {
-                int s  = 0;
+                int idPaquete  = 0;
                 if (lbPaquete.SelectedValue != null)
                 {
-                  s  = int.Parse(lbPaquete.SelectedValue.ToString());
+                  idPaquete  = lbPaquete.SelectedValue.ToString().ToInt();
                 }
                 else
                 {
-                    s = 0;
+                    idPaquete = 0;
                 }
-                dtDetallePaqueteLogico = objNegocioDatallePaquete.consultarDetallePaqueteLogico(s).Tables[0];
-                dtDetallePaqueteLogicoTemporal = objNegocioDatallePaquete.consultarDetallePaqueteLogico(s).Tables[0];
-                dsDetallePaquete = objNegocioDatallePaquete.consultarDetallePaquete(s);
+                dtDetallePaqueteLogico = objNegocioDatallePaquete.consultarDetallePaqueteLogico(idPaquete).Tables[0];
+                dtDetallePaqueteLogicoTemporal = objNegocioDatallePaquete.consultarDetallePaqueteLogico(idPaquete).Tables[0];
+                dsDetallePaquete = objNegocioDatallePaquete.consultarDetallePaquete(idPaquete);
                 dtDetallePaquete = dsDetallePaquete.Tables[0];
                 
                 dgDetallePaquete.DataSource = dtDetallePaquete;
@@ -229,13 +234,17 @@ namespace SistemaVentas
             {
                 foreach (DataGridViewColumn dc in dgDetallePaquete.Columns)
                 {
-                    if (dc.Index.Equals(3))
+                    if (dc.Index.Equals(4) || dc.Index.Equals(5))
                     {
                         dc.ReadOnly = false;
+                        dc.SortMode = DataGridViewColumnSortMode.NotSortable;
+                        dc.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                     }
                     else
                     {
                         dc.ReadOnly = true;
+                        dc.SortMode = DataGridViewColumnSortMode.NotSortable;
+                        dc.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                     }
                 }
             }
@@ -243,29 +252,30 @@ namespace SistemaVentas
 
         private void ajustarTamanioColumna()
         {
-            dgDetallePaquete.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dgDetallePaquete.Columns[0].Visible = false;
             dgDetallePaquete.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             dgDetallePaquete.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             dgDetallePaquete.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             dgDetallePaquete.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             dgDetallePaquete.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             dgDetallePaquete.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dgDetallePaquete.Columns[7].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
         }
 
         public void llenarPaquete()
         {
-            int id_cliente = 0;
+            int idCliente = 0;
             try
             {
                 if (flagDesbloquear == true)
                 {
-                    id_cliente = int.Parse(cbBusquedaCliente.SelectedValue.ToString());
+                    idCliente = cbBusquedaCliente.SelectedValue.ToString().ToInt();
 
                     limpiarPantalla();
                     if (rbPorCliente.Checked)
                     {
 
-                        dsPaquete = objNegocioPaquete.consultarPaquetePorCliente(id_cliente);
+                        dsPaquete = objNegocioPaquete.consultarPaquetePorCliente(idCliente);
 
                     }
                     if (rbPorFecha.Checked)
@@ -276,7 +286,7 @@ namespace SistemaVentas
                     if (rbPorClienteFecha.Checked)
                     {
                         String fecha = calendarioPaquete.Value.ToString("yyyy-MM-dd");
-                        dsPaquete = objNegocioPaquete.consultarPaquete(id_cliente, fecha);
+                        dsPaquete = objNegocioPaquete.consultarPaquete(idCliente, fecha);
                     }
 
                     if (rbPorClienteFecha.Checked || rbPorCliente.Checked)
@@ -329,6 +339,8 @@ namespace SistemaVentas
 
         private void dgDetallePaquete_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
+            txtObservaciones.Text = "";
+            txtObservaciones.Text = dtDetallePaqueteLogico.Rows[indexDataGrid][7].ToString();
             sumarPaquete();
         }
 
@@ -348,12 +360,12 @@ namespace SistemaVentas
             try
             {
              subtotal = (dgDetallePaquete.Rows.Cast<DataGridViewRow>()
-            .Where(r => Convert.ToBoolean(r.Cells[6].Value).Equals(true))
-            .Sum(t => Convert.ToDouble(t.Cells[5].Value))).ToString();
+            .Where(r => Convert.ToBoolean(r.Cells[7].Value).Equals(true))
+            .Sum(t => t.Cells[6].Value.ToString().ToDouble())).ToString();
 
                 txtSubtotalPaquete.Text = subtotal;
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 txtSubtotalPaquete.Text = subtotal;
                 throw;
@@ -363,14 +375,13 @@ namespace SistemaVentas
 
         private void desbloquearPantalla()
         {
-            calendarioPaquete.Enabled = false;
+            calendarioPaquete.Enabled = true;
             rbPorCliente.Enabled = false;
             rbPorClienteFecha.Enabled = false;
             rbPorFecha.Enabled = false;
             dgDetallePaquete.ReadOnly = false;
             darFormatoDetalle();
             btnAgregarProductoPaquete.Enabled = true;
-            btnEliminarProductoPaquete.Enabled = true;
             btnNuevo.Text = "Cancelar";
             btnEliminarPaquete.Enabled = false;
             btnModificarPaquete.Enabled = false;
@@ -392,7 +403,6 @@ namespace SistemaVentas
             rbPorFecha.Enabled = true;
             dgDetallePaquete.ReadOnly = true;
             btnAgregarProductoPaquete.Enabled = false;
-            btnEliminarProductoPaquete.Enabled = false;
             btnNuevo.Text = "Nuevo";
             btnEliminarPaquete.Enabled = true;
             btnModificarPaquete.Enabled = true;
@@ -411,12 +421,13 @@ namespace SistemaVentas
         {
             if (dtDetallePaquete.Columns.Count<=0)
             {
+                dtDetallePaquete.Columns.Add("idDetalle", typeof(string));
                 dtDetallePaquete.Columns.Add("Producto", typeof(string));
                 dtDetallePaquete.Columns.Add("Color", typeof(string));
                 dtDetallePaquete.Columns.Add("Tamano", typeof(string));
                 dtDetallePaquete.Columns.Add("Cantidad", typeof(int));
-                dtDetallePaquete.Columns.Add("Precio", typeof(double));
-                dtDetallePaquete.Columns.Add("Total", typeof(double));
+                dtDetallePaquete.Columns.Add("Precio", typeof(decimal));
+                dtDetallePaquete.Columns.Add("Total", typeof(decimal));
                 dtDetallePaquete.Columns.Add("Estado", typeof(bool));
             }
         }
@@ -430,9 +441,10 @@ namespace SistemaVentas
                 dtDetallePaqueteLogico.Columns.Add("idColor", typeof(int));
                 dtDetallePaqueteLogico.Columns.Add("idTamano", typeof(int));
                 dtDetallePaqueteLogico.Columns.Add("Cantidad", typeof(int));
-                dtDetallePaqueteLogico.Columns.Add("Total", typeof(double));
+                dtDetallePaqueteLogico.Columns.Add("Total", typeof(decimal));
                 dtDetallePaqueteLogico.Columns.Add("Estado", typeof(bool));
                 dtDetallePaqueteLogico.Columns.Add("Observacion", typeof(string));
+                dtDetallePaqueteLogico.Columns.Add("Precio", typeof(decimal));
             }
 
         }
@@ -446,9 +458,10 @@ namespace SistemaVentas
                 dtDetallePaqueteLogico.Columns.Add("idColor", typeof(int));
                 dtDetallePaqueteLogico.Columns.Add("idTamano", typeof(int));
                 dtDetallePaqueteLogico.Columns.Add("Cantidad", typeof(int));
-                dtDetallePaqueteLogico.Columns.Add("Total", typeof(double));
+                dtDetallePaqueteLogico.Columns.Add("Total", typeof(decimal));
                 dtDetallePaqueteLogico.Columns.Add("Estado", typeof(bool));
                 dtDetallePaqueteLogico.Columns.Add("Observacion", typeof(string));
+                dtDetallePaqueteLogico.Columns.Add("Precio", typeof(decimal));
 
             }
 
@@ -469,8 +482,8 @@ namespace SistemaVentas
             {
                 foreach(DataRow fila in dtDetallePaqueteLogico.Rows)
                 {
-                    int idProducto = int.Parse(fila[1].ToString());
-                    int cantidad = int.Parse(fila[4].ToString());
+                    int idProducto = fila[1].ToString().ToInt();
+                    int cantidad = fila[4].ToString().ToInt();
                     
                     if(bool.Parse(fila[6].ToString()))
                     {
@@ -485,7 +498,6 @@ namespace SistemaVentas
         
         private void btnNuevo_Click(object sender, EventArgs e)
         {
-            operacion = 0;
             if (flagDesbloquear == true)
             {
                 clsNegocioProducto objNegocioProducto = new clsNegocioProducto();
@@ -520,6 +532,7 @@ namespace SistemaVentas
             }
             else
             {
+                devolverDetalle();
                 bloquearPantalla();
                 dgDetallePaquete.DataSource = null;
                 dgDetallePaquete.Refresh();
@@ -527,6 +540,91 @@ namespace SistemaVentas
                 dtDetallePaquete = new DataTable();
                 llenarPaquete();
             }                
+        }
+
+        private void devolverDetalle()
+        {
+            clsNegocioProducto objNegocioProducto = new clsNegocioProducto();
+            int idProducto = 0;
+            int cantidad = 0;
+            if(operacion == 1)
+            {
+                foreach (DataRow fila in dtDetallePaqueteLogico.Rows)
+                {
+                    if(fila[0].ToString().ToInt() == 0)
+                    {
+                        idProducto = fila[1].ToString().ToInt();
+                        cantidad = fila[4].ToString().ToInt();
+
+                        if (bool.Parse(fila[6].ToString()))
+                        {
+                            objNegocioProducto.aumentarCantidad(idProducto, cantidad);
+                        }
+                    }
+                    else
+                    {
+                        foreach(DataRow filaOiginal in dtDetallePaqueteLogicoTemporal.Rows)
+                        {
+                            int idDetalleOriginal = filaOiginal[0].ToString().ToInt();
+                            int idDetalle = fila[0].ToString().ToInt();
+                            if (idDetalleOriginal == idDetalle)
+                            {
+                                int cantidadOriginal = filaOiginal[4].ToString().ToInt();
+                                int cantidadLogica = fila[4].ToString().ToInt();
+                                bool estadoOriginal = bool.Parse(filaOiginal[6].ToString());
+                                bool estadoLogico = bool.Parse(fila[6].ToString());
+                                idProducto = fila[1].ToString().ToInt();
+
+                                if(estadoLogico)
+                                {
+                                    if (cantidadOriginal > cantidadLogica)
+                                    {
+                                        int diferencia = cantidadOriginal - cantidadLogica;
+                                        objNegocioProducto.disminuirCantidad(idProducto, diferencia);
+                                    }
+                                    if (cantidadLogica > cantidadOriginal)
+                                    {
+                                        int diferencia = cantidadLogica - cantidadOriginal;
+                                        objNegocioProducto.aumentarCantidad(idProducto, diferencia);
+                                    }
+                                }
+                               
+
+                                if(estadoOriginal != estadoLogico)
+                                {
+                                    if(estadoOriginal)
+                                    {
+                                        objNegocioProducto.disminuirCantidad(idProducto, cantidadOriginal);
+                                    }
+                                    else
+                                    {
+                                        objNegocioProducto.aumentarCantidad(idProducto, cantidadOriginal);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                try
+                {
+                    foreach (DataRow fila in dtDetallePaqueteLogico.Rows)
+                    {
+                        idProducto = fila[1].ToString().ToInt();
+                        cantidad = fila[4].ToString().ToInt();
+
+                        if (bool.Parse(fila[6].ToString()))
+                        {
+                            objNegocioProducto.aumentarCantidad(idProducto, cantidad);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                }
+            }
         }
 
         private void btnModificarPaquete_Click(object sender, EventArgs e)
@@ -560,13 +658,38 @@ namespace SistemaVentas
 
         private void btnEliminarProductoPaquete_Click(object sender, EventArgs e)
         {
+            bool estado = false;
+            int idProducto = 0;
+            int cantidad = 0;
+            clsNegocioProducto objNegocioProducto = new clsNegocioProducto();
             foreach (DataGridViewCell onCell in dgDetallePaquete.SelectedCells)
             {
                 if (onCell.Selected)
                 {
                     indexDataGrid = onCell.RowIndex;
+                    int idDetalle = dgDetallePaquete[0, indexDataGrid].Value.ToString().ToInt();
+                
+                    foreach(DataRow drDetalle in dtDetallePaqueteLogico.Rows)
+                    {
+                        if(drDetalle[0].ToString().ToInt() == idDetalle)
+                        {
+                            estado = bool.Parse(drDetalle[6].ToString());
+                            idProducto = drDetalle[1].ToString().ToInt();
+                            cantidad = drDetalle[4].ToString().ToInt();
+                        }
+                    }
+
+                    
                     dgDetallePaquete.Rows.RemoveAt(indexDataGrid);
                     dtDetallePaqueteLogico.Rows.RemoveAt(indexDataGrid);
+                    if (idDetalle != 0)
+                    {
+                        if(objNegocioDatallePaquete.eliminarDetallePaquete(idDetalle))
+                        {
+                            if(estado)
+                            objNegocioProducto.aumentarCantidad(idProducto, cantidad);
+                        }
+                    }
                     sumarPaquete();
 
                 }
@@ -581,7 +704,7 @@ namespace SistemaVentas
                 {
                     if (cbEstadoPaquete.SelectedIndex == 1)
                     {
-                        int idPaquete = int.Parse(lbPaquete.SelectedValue.ToString());
+                        int idPaquete = lbPaquete.SelectedValue.ToString().ToInt();
                         objNegocioDatallePaquete.eliminarDetallePaquete(idPaquete);
                         objNegocioPaquete.eliminarPaquete(idPaquete);
                         restaurarCantidades();
@@ -603,7 +726,7 @@ namespace SistemaVentas
             }
         }
 
-        private void btnGuardarCliente_Click(object sender, EventArgs e)
+        private void btnGuardarPaquete_Click(object sender, EventArgs e)
         {
             List<int> diferencia = new List<int>();
             int contadorFilas = 0;
@@ -611,13 +734,11 @@ namespace SistemaVentas
             clsDetallePaquete objDetallePaqueteTemporal = new clsDetallePaquete();
             try
             {
-                dtDetallePaqueteLogico.Rows[indexDataGrid][7] = txtObservaciones.Text;
-
-                if (operacion == 0)
+        if (operacion == 0)
                 {
                     contadorFilas = 0;
-                    objPaqueteTemporal.id_cliente = int.Parse(cbBusquedaCliente.SelectedValue.ToString());
-                    objPaqueteTemporal.subtotal_paquete = double.Parse(txtSubtotalPaquete.Text);
+                    objPaqueteTemporal.id_cliente = cbBusquedaCliente.SelectedValue.ToString().ToInt();
+                    objPaqueteTemporal.subtotal_paquete = txtSubtotalPaquete.Text.ToDouble();
                     objPaqueteTemporal.fecha_paquete = calendarioPaquete.Value.ToString("yyyy-MM-dd");
                     objPaqueteTemporal.estado_paquete = false;
 
@@ -630,13 +751,14 @@ namespace SistemaVentas
                         {
                             ultimoID = objNegocioPaquete.ultimoID();
                             objDetallePaqueteTemporal.id_paquete = ultimoID;
-                            objDetallePaqueteTemporal.id_producto = int.Parse(fila[1].ToString());
-                            objDetallePaqueteTemporal.id_color = int.Parse(fila[2].ToString());
-                            objDetallePaqueteTemporal.id_tamano = int.Parse(fila[3].ToString());
-                            objDetallePaqueteTemporal.cantidad = int.Parse(fila[4].ToString());
-                            objDetallePaqueteTemporal.total_detalle = double.Parse(fila[5].ToString());
+                            objDetallePaqueteTemporal.id_producto = fila[1].ToString().ToInt();
+                            objDetallePaqueteTemporal.id_color = fila[2].ToString().ToInt();
+                            objDetallePaqueteTemporal.id_tamano = fila[3].ToString().ToInt();
+                            objDetallePaqueteTemporal.cantidad = fila[4].ToString().ToInt();
+                            objDetallePaqueteTemporal.total_detalle = fila[5].ToString().ToDouble();
                             objDetallePaqueteTemporal.estado_detalle = bool.Parse(fila[6].ToString());
                             objDetallePaqueteTemporal.observacion_detalle_paquete = fila[7].ToString();
+                            objDetallePaqueteTemporal.precio_producto = fila[8].ToString().ToDouble();
                             contadorFilas++;
 
                             if (objNegocioDatallePaquete.insertarDetallePaquete(objDetallePaqueteTemporal))
@@ -661,10 +783,10 @@ namespace SistemaVentas
                 if (operacion == 1)
                 {
                     contadorFilas = 0;
-                    int idPaquete = int.Parse(lbPaquete.SelectedValue.ToString());
+                    int idPaquete = lbPaquete.SelectedValue.ToString().ToInt();
                     objPaqueteTemporal.id_paquete = idPaquete;
-                    objPaqueteTemporal.id_cliente = int.Parse(cbBusquedaCliente.SelectedValue.ToString());
-                    objPaqueteTemporal.subtotal_paquete = double.Parse(txtSubtotalPaquete.Text);
+                    objPaqueteTemporal.id_cliente = cbBusquedaCliente.SelectedValue.ToString().ToInt();
+                    objPaqueteTemporal.subtotal_paquete = txtSubtotalPaquete.Text.ToDouble();
                     objPaqueteTemporal.fecha_paquete = calendarioPaquete.Value.ToString("yyyy-MM-dd");
                     objPaqueteTemporal.estado_paquete = false;
 
@@ -674,7 +796,7 @@ namespace SistemaVentas
 
                         foreach (int idDetalle in diferencia)
                         {
-                            if (int.Parse(dtDetallePaqueteLogico.Rows[contadorFilas][0].ToString()) != 0)
+                            if (dtDetallePaqueteLogico.Rows[contadorFilas][0].ToString().ToInt() != 0)
                             {
                                 objNegocioDatallePaquete.eliminarDetallePaqueteID(idDetalle);
                             }
@@ -682,17 +804,18 @@ namespace SistemaVentas
 
                         foreach (DataRow fila in dtDetallePaqueteLogico.Rows)
                         {
-                            if (int.Parse(fila[0].ToString()) != 0)
+                            if (fila[0].ToString().ToInt() != 0)
                             {
                                 objDetallePaqueteTemporal.id_paquete = idPaquete;
-                                objDetallePaqueteTemporal.id_detalle_paquete = int.Parse(fila[0].ToString());
-                                objDetallePaqueteTemporal.id_producto = int.Parse(fila[1].ToString());
-                                objDetallePaqueteTemporal.id_color = int.Parse(fila[2].ToString());
-                                objDetallePaqueteTemporal.id_tamano = int.Parse(fila[3].ToString());
-                                objDetallePaqueteTemporal.cantidad = int.Parse(fila[4].ToString());
-                                objDetallePaqueteTemporal.total_detalle = double.Parse(fila[5].ToString());
+                                objDetallePaqueteTemporal.id_detalle_paquete = fila[0].ToString().ToInt();
+                                objDetallePaqueteTemporal.id_producto = fila[1].ToString().ToInt();
+                                objDetallePaqueteTemporal.id_color = fila[2].ToString().ToInt();
+                                objDetallePaqueteTemporal.id_tamano = fila[3].ToString().ToInt();
+                                objDetallePaqueteTemporal.cantidad = fila[4].ToString().ToInt();
+                                objDetallePaqueteTemporal.total_detalle = fila[5].ToString().ToDouble();
                                 objDetallePaqueteTemporal.estado_detalle = bool.Parse(fila[6].ToString());
                                 objDetallePaqueteTemporal.observacion_detalle_paquete = fila[7].ToString();
+                                objDetallePaqueteTemporal.precio_producto = fila[8].ToString().ToDouble();
 
                                 if (objNegocioDatallePaquete.actualizarDetallePaquete(objDetallePaqueteTemporal))
                                 {
@@ -706,13 +829,15 @@ namespace SistemaVentas
                             else
                             {
                                 objDetallePaqueteTemporal.id_paquete = idPaquete;
-                                objDetallePaqueteTemporal.id_detalle_paquete = int.Parse(fila[0].ToString());
-                                objDetallePaqueteTemporal.id_producto = int.Parse(fila[1].ToString());
-                                objDetallePaqueteTemporal.id_color = int.Parse(fila[2].ToString());
-                                objDetallePaqueteTemporal.id_tamano = int.Parse(fila[3].ToString());
-                                objDetallePaqueteTemporal.cantidad = int.Parse(fila[4].ToString());
-                                objDetallePaqueteTemporal.total_detalle = double.Parse(fila[5].ToString());
+                                objDetallePaqueteTemporal.id_detalle_paquete = fila[0].ToString().ToInt();
+                                objDetallePaqueteTemporal.id_producto = fila[1].ToString().ToInt();
+                                objDetallePaqueteTemporal.id_color = fila[2].ToString().ToInt();
+                                objDetallePaqueteTemporal.id_tamano = fila[3].ToString().ToInt();
+                                objDetallePaqueteTemporal.cantidad = fila[4].ToString().ToInt();
+                                objDetallePaqueteTemporal.total_detalle = fila[5].ToString().ToDouble();
                                 objDetallePaqueteTemporal.estado_detalle = bool.Parse(fila[6].ToString());
+                                objDetallePaqueteTemporal.observacion_detalle_paquete = fila[7].ToString();
+                                objDetallePaqueteTemporal.precio_producto = fila[8].ToString().ToDouble();
 
                                 if (objNegocioDatallePaquete.insertarDetallePaquete(objDetallePaqueteTemporal))
                                 {
@@ -754,74 +879,79 @@ namespace SistemaVentas
             {
                 if (lbPaquete.Items.Count > 0)
                 {
-                    idPaquete = int.Parse(lbPaquete.SelectedValue.ToString());
-                    
-                    if (cbEstadoPaquete.SelectedIndex == 1)
+                    if(dgDetallePaquete.Rows.Count > 0)
                     {
-                        objVenta.id_cliente = int.Parse(cbBusquedaCliente.SelectedValue.ToString());
-                        objVenta.fecha_venta = DateTime.Today.ToShortDateString();
-                        objVenta.estado_venta = cbEstadoPaquete.SelectedIndex;
-                        objVenta.subtotal_venta = double.Parse(txtSubtotalPaquete.Text);
+                        idPaquete = lbPaquete.SelectedValue.ToString().ToInt();
 
-                        if (objNegocioVenta.insertarVenta(objVenta))
+                        if (cbEstadoPaquete.SelectedIndex == 1)
                         {
-                            foreach (DataRow fila in dtDetallePaqueteLogico.Rows)
+                            objVenta.id_cliente = cbBusquedaCliente.SelectedValue.ToString().ToInt();
+                            objVenta.fecha_venta = calendarioPaquete.Text;
+                            objVenta.estado_venta = 0;
+                            objVenta.subtotal_venta = txtSubtotalPaquete.Text.ToDouble();
+
+                            if (objNegocioVenta.insertarVenta(objVenta))
                             {
-                                if (bool.Parse(fila[6].ToString()))
+                                foreach (DataRow fila in dtDetallePaqueteLogico.Rows)
                                 {
-                                    idDetallePaquete = int.Parse(dtDetallePaqueteLogicoTemporal.Rows[count][0].ToString());
-                                    int idVenta = objNegocioVenta.consultarUltimoID();
-                                    objDetalleVenta.id_venta = idVenta;
-                                    int id_producto = int.Parse(fila[1].ToString());
-                                    objDetalleVenta.id_producto = id_producto;
-                                    objDetalleVenta.cantidad = int.Parse(fila[4].ToString());
-                                    objDetalleVenta.total_detalle = double.Parse(fila[5].ToString());
-                                    objDetalleVenta.estado_detalle = true;
-                                    objDetalleVenta.id_detalle_paquete = idDetallePaquete;
-                                    objDetallePaquete.id_paquete = idPaquete;
-                                    objDetalleVenta.id_color = int.Parse(fila[2].ToString());
-                                    objDetalleVenta.id_tamano = int.Parse(fila[3].ToString());
-                                    objDetalleVenta.observacion_detalle_venta = fila[7].ToString();
-
-                                    dtProducto = objNegocioProducto.consultarProductoId(id_producto).Tables[0];
-                                    objDetalleVenta.precio_producto = double.Parse(dtProducto.Rows[0][2].ToString());
-
-                                    if (objNegocioDetalleVenta.insertarDetalleVenta(objDetalleVenta))
+                                    if (bool.Parse(fila[6].ToString()))
                                     {
-                                        
+                                        idDetallePaquete = dtDetallePaqueteLogicoTemporal.Rows[count][0].ToString().ToInt();
+                                        int idVenta = objNegocioVenta.consultarUltimoID();
+                                        objDetalleVenta.id_venta = idVenta;
+                                        int id_producto = fila[1].ToString().ToInt();
+                                        objDetalleVenta.id_producto = id_producto;
+                                        objDetalleVenta.cantidad = fila[4].ToString().ToInt();
+                                        objDetalleVenta.total_detalle = fila[5].ToString().ToDouble();
+                                        objDetalleVenta.estado_detalle = true;
+                                        objDetalleVenta.id_detalle_paquete = idDetallePaquete;
+                                        objDetallePaquete.id_paquete = idPaquete;
+                                        objDetalleVenta.id_color = fila[2].ToString().ToInt();
+                                        objDetalleVenta.id_tamano = fila[3].ToString().ToInt();
+                                        objDetalleVenta.observacion_detalle_venta = fila[7].ToString();
+
+                                        objDetalleVenta.precio_producto = fila[8].ToString().ToDouble();
+
+                                        if (objNegocioDetalleVenta.insertarDetalleVenta(objDetalleVenta))
+                                        {
+
+                                        }
+                                        else
+                                        {
+                                            int idDetalleVenta = objNegocioDetalleVenta.ConsultarUltimoDetalleVenta();
+                                            objNegocioDetalleVenta.eliminarDetalleVenta(idDetalleVenta, idVenta);
+                                        }
                                     }
-                                    else
-                                    {
-                                        int idDetalleVenta = objNegocioDetalleVenta.ConsultarUltimoDetalleVenta();
-                                        objNegocioDetalleVenta.eliminarDetalleVenta(idDetalleVenta,idVenta);
-                                        objNegocioVenta.eliminarVenta(idPaquete);
-                                    }
+                                    count++;
                                 }
-                                count++;
+                                objNegocioPaquete.cambiarEstadoPaquete(idPaquete);
+                                objSaldo.id_cliente = cbBusquedaCliente.SelectedValue.ToString().ToInt();
+                                objSaldo.saldo = txtSubtotalPaquete.Text.ToDouble();
+                                objNegocioSaldo.cambiarSaldo(objSaldo, 1);
+                                MessageBox.Show("Venta registrada con exito");
+
                             }
-                            objNegocioPaquete.cambiarEstadoPaquete(idPaquete);
-                            objSaldo.id_cliente = int.Parse(cbBusquedaCliente.SelectedValue.ToString());
-                            objSaldo.saldo = double.Parse(txtSubtotalPaquete.Text);
-                            objNegocioSaldo.cambiarSaldo(objSaldo, 1);
-                            MessageBox.Show("Venta registrada con exito");
+                            else
+                            {
+                                objNegocioVenta.eliminarVenta(idPaquete);
+
+                                MessageBox.Show("Error al ingresar la venta");
+                            }
 
                         }
                         else
                         {
-                            objNegocioVenta.eliminarVenta(idPaquete);
-
-                            MessageBox.Show("Error al ingresar la venta");
+                            MessageBox.Show("Paquete ya vendido, no se puede volver a vender.");
                         }
-
                     }
                     else
                     {
-                        MessageBox.Show("Paquete ya vendido, no se puede volver a vender.");
+                        MessageBox.Show("No existe ningun paquete seleccionado para la venta");
                     }
                 }
                 else
                 {
-                    MessageBox.Show("No existe ningun paquete seleccionado para la venta");
+                    MessageBox.Show("No se puede vender paquete vacio");
                 }
             }
             
@@ -874,7 +1004,7 @@ namespace SistemaVentas
         {
             
             e.Control.KeyPress -= new KeyPressEventHandler(Column1_KeyPress);
-            if (dgDetallePaquete.CurrentCell.ColumnIndex == 3) //Desired Column
+            if (dgDetallePaquete.CurrentCell.ColumnIndex == 4) //Desired Column
             {
                 TextBox tb = e.Control as TextBox;
                 if (tb != null)
@@ -886,7 +1016,7 @@ namespace SistemaVentas
             }
 
             
-            if (dgDetallePaquete.CurrentCell.ColumnIndex == 6) //Desired Column
+            if (dgDetallePaquete.CurrentCell.ColumnIndex == 7) //Desired Column
             {
                 CheckBox cb = e.Control as CheckBox;
                 if (cb != null)
@@ -906,65 +1036,94 @@ namespace SistemaVentas
 
         private void dgDetallePaquete_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
+            int idProducto = 0;
+            int cantidadProducto = 0;
+            int antiguaCantidad = 0;
+            decimal precioProducto = 0;
+            bool estadoProduto = false;
+            int idProductoLogico = 0;
+
             DataTable dtProducto = new DataTable();
             clsNegocioProducto objNegocioProducto = new clsNegocioProducto();
             int nuevaCantidad;
 
             //MessageBox.Show();
-            string nuevaCantidadTexto = dgDetallePaquete[3, indexCantidad].Value.ToString();
+            string nuevaCantidadTexto = dgDetallePaquete[4, e.RowIndex].Value.ToString();
+            int idDetalle = dgDetallePaquete[0, e.RowIndex].Value.ToString().ToInt();
             Int32.TryParse(nuevaCantidadTexto, out nuevaCantidad);
-
-            if(e.ColumnIndex == 3)
+            int contador = 0;
+            foreach (DataRow drDetalle in dtDetallePaqueteLogico.Rows)
             {
-                if (nuevaCantidad > 0)
+                if (idDetalle == drDetalle[0].ToString().ToInt())
                 {
-                    int idProducto = int.Parse(dtDetallePaqueteLogico.Rows[indexCantidad][1].ToString());
-                    dtProducto = objNegocioProducto.consultarProductoId(idProducto).Tables[0];
-                    int cantidadProducto = int.Parse(dtProducto.Rows[0][7].ToString());
-                    int antiguaCantidad = int.Parse(dtDetallePaqueteLogico.Rows[indexCantidad][4].ToString());
-                    double precioProducto = double.Parse(dtProducto.Rows[0][2].ToString());
-                    bool estadoProduto = bool.Parse(dtDetallePaqueteLogico.Rows[indexCantidad][6].ToString());
-                    int idProductoLogico = int.Parse(dtDetallePaqueteLogico.Rows[indexCantidad][0].ToString());
 
-                    if(idProductoLogico != 0)
+                    if (e.ColumnIndex == 4)
                     {
-                        if (estadoProduto)
+                        if (nuevaCantidad > 0)
                         {
-                            if (antiguaCantidad < nuevaCantidad)
+                            idProducto = drDetalle[1].ToString().ToInt();
+                            dtProducto = objNegocioProducto.consultarProductoId(idProducto).Tables[0];
+                            cantidadProducto = dtProducto.Rows[0][7].ToString().ToInt();
+                            antiguaCantidad = drDetalle[4].ToString().ToInt();
+                            precioProducto = drDetalle[8].ToString().ToDouble();
+                            estadoProduto = bool.Parse(drDetalle[6].ToString());
+                            idProductoLogico = drDetalle[0].ToString().ToInt();
+
+                            if (idProductoLogico != 0)
                             {
-                                if (nuevaCantidad <= antiguaCantidad + cantidadProducto)
+                                if (estadoProduto)
                                 {
-                                    int cantidad = nuevaCantidad - antiguaCantidad;
-                                    objNegocioProducto.disminuirCantidad(idProducto, cantidad);
+                                    if (antiguaCantidad < nuevaCantidad)
+                                    {
+                                        if (nuevaCantidad <= antiguaCantidad + cantidadProducto)
+                                        {
+                                            int cantidad = nuevaCantidad - antiguaCantidad;
+                                            objNegocioProducto.disminuirCantidad(idProducto, cantidad);
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show("Cantidad de producto no disponible");
+                                            dtDetallePaqueteLogico.Rows[contador][4] = antiguaCantidad;
+                                            dtDetallePaqueteLogico.Rows[contador][5] = antiguaCantidad * precioProducto;
+                                            dgDetallePaquete[4, e.RowIndex].Value = antiguaCantidad;
+                                            return;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        int cantidad = antiguaCantidad - nuevaCantidad;
+                                        objNegocioProducto.aumentarCantidad(idProducto, cantidad);
+                                    }
+                                    dtDetallePaqueteLogico.Rows[contador][4] = nuevaCantidad;
+                                    dtDetallePaqueteLogico.Rows[contador][5] = nuevaCantidad * precioProducto;
+                                    dgDetallePaquete[6, e.RowIndex].Value = nuevaCantidad * precioProducto;
+                                    sumarPaquete();
                                 }
                                 else
                                 {
-                                    MessageBox.Show("Cantidad de producto no disponible");
-                                    dtDetallePaqueteLogico.Rows[indexCantidad][4] = antiguaCantidad;
-                                    dtDetallePaqueteLogico.Rows[indexCantidad][5] = antiguaCantidad * precioProducto;
-                                    dgDetallePaquete[3, indexCantidad].Value = antiguaCantidad;
-                                    return;
+                                    MessageBox.Show("No se puede modificar la cantidad de un producto que no es parte del paquete");
                                 }
                             }
                             else
                             {
-                                int cantidad = antiguaCantidad - nuevaCantidad;
-                                objNegocioProducto.aumentarCantidad(idProducto, cantidad);
+                                dgDetallePaquete[4, e.RowIndex].Value = antiguaCantidad;
+                                dgDetallePaquete[6, e.RowIndex].Value = nuevaCantidad * precioProducto;
+                                sumarPaquete();
+                                return;
                             }
-                            dtDetallePaqueteLogico.Rows[indexCantidad][4] = nuevaCantidad;
-                            dtDetallePaqueteLogico.Rows[indexCantidad][5] = nuevaCantidad * precioProducto;
-                        }
-                        else
-                        {
-                            MessageBox.Show("No se puede modificar la cantidad de un producto que no es parte del paquete");
                         }
                     }
-                    else
+                    if (e.ColumnIndex == 5)
                     {
-                        dgDetallePaquete[3, indexCantidad].Value = antiguaCantidad;
-                        return;
+                        precioProducto = dgDetallePaquete[5, e.RowIndex].Value.ToString().ToDouble();
+                        dtDetallePaqueteLogico.Rows[contador][8] = precioProducto;
+                        dtDetallePaqueteLogico.Rows[contador][5] = nuevaCantidad * precioProducto;
+                        dgDetallePaquete[6, e.RowIndex].Value = nuevaCantidad * precioProducto;
+                        sumarPaquete();
+
                     }
                 }
+                contador++;
             }
         }
 
@@ -979,8 +1138,8 @@ namespace SistemaVentas
 
                 if (valor)
                 {
-                    int idProducto = int.Parse(dtDetallePaqueteLogico.Rows[indexDataGrid][1].ToString());
-                    int cantidad = int.Parse(dtDetallePaqueteLogico.Rows[indexDataGrid][4].ToString());
+                    int idProducto = dtDetallePaqueteLogico.Rows[indexDataGrid][1].ToString().ToInt();
+                    int cantidad = dtDetallePaqueteLogico.Rows[indexDataGrid][4].ToString().ToInt();
                     dtDetallePaqueteLogico.Rows[indexDataGrid][6] = false;
                     objNegocioProducto.aumentarCantidad(idProducto, cantidad);
                     DataGridViewRow row = dgDetallePaquete.Rows[indexDataGrid];
@@ -989,19 +1148,20 @@ namespace SistemaVentas
             }
         }
 
+
         private void btnIncluirProducto_Click(object sender, EventArgs e)
         {
             clsNegocioProducto objNegocioProducto = new clsNegocioProducto();
             if (dgDetallePaquete.RowCount > 0)
             {
-                indexDataGrid = dgDetallePaquete.CurrentCell.RowIndex;
+                indexDataGrid = dgDetallePaquete.CurrentCell.RowIndex.ToString().ToInt();
 
                 bool valor = Boolean.Parse(dtDetallePaqueteLogico.Rows[indexDataGrid][6].ToString());
 
                 if (!valor)
                 {
-                    int idProducto = int.Parse(dtDetallePaqueteLogico.Rows[indexDataGrid][1].ToString());
-                    int cantidad = int.Parse(dtDetallePaqueteLogico.Rows[indexDataGrid][4].ToString());
+                    int idProducto = dtDetallePaqueteLogico.Rows[indexDataGrid][1].ToString().ToInt();
+                    int cantidad = dtDetallePaqueteLogico.Rows[indexDataGrid][4].ToString().ToInt();
                     if (objNegocioProducto.disminuirCantidad(idProducto, cantidad))
                     {
                         dtDetallePaqueteLogico.Rows[indexDataGrid][6] = true;
@@ -1021,9 +1181,13 @@ namespace SistemaVentas
         {
             try
             {
-                txtObservaciones.Text = "";
-                indexDataGrid = dgDetallePaquete.CurrentCell.RowIndex;
-                txtObservaciones.Text = dtDetallePaqueteLogico.Rows[indexDataGrid][7].ToString();
+                if(dgDetallePaquete.Rows.Count > 0)
+                {
+
+                    indexDataGrid = dgDetallePaquete.CurrentCell.RowIndex;
+                    txtObservaciones.Text = "";
+                    txtObservaciones.Text = dtDetallePaqueteLogico.Rows[indexDataGrid][7].ToString();
+                }
             }
             catch(Exception ex)
             {
@@ -1032,7 +1196,7 @@ namespace SistemaVentas
             
         }
 
-        private void    dgDetallePaquete_CellEnter(object sender, DataGridViewCellEventArgs e)
+        private void dgDetallePaquete_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
             try
             {
@@ -1065,7 +1229,7 @@ namespace SistemaVentas
         //private void dgDetallePaquete_RowEnter(object sender, DataGridViewCellEventArgs e)
         //{
         //    //indexDataGrid = dgDetallePaquete.CurrentCell.RowIndex;
-        //    int idDetalle = int.Parse(dtDetallePaqueteLogico.Rows[indexDataGrid][0].ToString());
+        //    int idDetalle = dtDetallePaqueteLogico.Rows[indexDataGrid][0].ToString());
 
         //    txtObservaciones.Text = objNegocioDatallePaquete.consultarObservacionDetallePaquete(idDetalle);
         //}

@@ -13,26 +13,23 @@ namespace CapaDatos
         Conexion conect;
         DataSet dsSaldo;
 
-        public double consutarSaldoId(int id_cliente)
+        public DataSet consutarSaldoId(int id_cliente, int tipo)
         {
             conect = new Conexion();
             dsSaldo = new DataSet();
-            double valorRetorno = 0;
             conect.abrirConexion();
             SqlCommand cmd = new SqlCommand("sp_consultar_saldo", conect.conn);
             cmd.CommandType = CommandType.StoredProcedure;
             try
             {
                 cmd.Parameters.Add(new SqlParameter("@id_cliente", SqlDbType.Int)).Value = id_cliente;
+                cmd.Parameters.Add(new SqlParameter("@tipo", SqlDbType.Int)).Value = tipo;
                 cmd.ExecuteNonQuery();
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 da.Fill(dsSaldo);
 
-                if(dsSaldo.Tables[0].Rows.Count>0)
-                {
-                    valorRetorno = double.Parse(dsSaldo.Tables[0].Rows[0][2].ToString()); 
-                }
+                return dsSaldo;
             }
             catch (Exception)
             {
@@ -42,10 +39,9 @@ namespace CapaDatos
             {
                 conect.cerrarConexion();
             }
-            return valorRetorno;
         }
 
-        public bool modificarSaldo(int id_cliente, double saldo)
+        public bool modificarSaldo(int id_cliente, decimal saldo)
         {
             conect = new Conexion();
             conect.abrirConexion();
@@ -69,7 +65,34 @@ namespace CapaDatos
             }
         }
 
-        public bool insertarSaldo(int id_cliente, double saldo)
+        public DataSet ConsultarSaldoPendienteTodo(int idReferencia)
+        {
+            conect = new Conexion();
+            dsSaldo = new DataSet();
+            conect.abrirConexion();
+            SqlCommand cmd = new SqlCommand("sp_consultar_saldo_todo", conect.conn);
+            cmd.Parameters.Add(new SqlParameter("@id_referencia", SqlDbType.Int)).Value = idReferencia;
+            cmd.CommandType = CommandType.StoredProcedure;
+            try
+            {
+                cmd.ExecuteNonQuery();
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dsSaldo);
+
+                return dsSaldo;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                conect.cerrarConexion();
+            }
+        }
+
+        public bool insertarSaldo(int id_cliente, decimal saldo)
         {
             conect = new Conexion();
             conect.abrirConexion();
@@ -82,6 +105,36 @@ namespace CapaDatos
                 cmd.ExecuteNonQuery();
 
                 return true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                conect.cerrarConexion();
+            }
+        }
+
+        public DataSet ConsultarPagoRecibido(int idReferencia, int idCliente, string strFechaDesde, string strFechaHasta)
+        {
+            conect = new Conexion();
+            dsSaldo = new DataSet();
+            conect.abrirConexion();
+            SqlCommand cmd = new SqlCommand("sp_reporte_pago", conect.conn);
+            cmd.Parameters.Add(new SqlParameter("@id_cliente", SqlDbType.Int)).Value = idCliente;
+            cmd.Parameters.Add(new SqlParameter("@id_referencia", SqlDbType.Int)).Value = idReferencia;
+            cmd.Parameters.Add(new SqlParameter("@fecha_desde", SqlDbType.Date)).Value = strFechaDesde;
+            cmd.Parameters.Add(new SqlParameter("@fecha_hasta", SqlDbType.Date)).Value = strFechaHasta;
+            cmd.CommandType = CommandType.StoredProcedure;
+            try
+            {
+                cmd.ExecuteNonQuery();
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dsSaldo);
+
+                return dsSaldo;
             }
             catch (Exception)
             {

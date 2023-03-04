@@ -9,18 +9,19 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CapaNegocio;
 using ModeloDatos;
+using Utilitarios;
 
 namespace SistemaVentas
 {
     public partial class frmCliente : Form
     {
         DataSet dsCliente;
+        DataTable dtCliente = null;
         clsNegocioCliente objNegocioCliente = new clsNegocioCliente();
         clsNegocioReferencia objNegocioReferencia = new clsNegocioReferencia();
         int operacion = 0;
         int idCliente = 0;
         bool flagNuevo = true;
-
         public frmCliente()
         {
             InitializeComponent();
@@ -59,7 +60,8 @@ namespace SistemaVentas
                 cbBusquedaCliente.DataSource = null;
 
                 clsNegocioCliente objNegocioCliente = new clsNegocioCliente();
-                cbBusquedaCliente.DataSource = objNegocioCliente.consultarTodosClientes().Tables[0];
+                dtCliente = objNegocioCliente.consultarTodosClientes().Tables[0];
+                cbBusquedaCliente.DataSource = dtCliente;
                 cbBusquedaCliente.ValueMember = "id_cliente";
                 cbBusquedaCliente.DisplayMember = "nombre_completo";
             }
@@ -75,7 +77,7 @@ namespace SistemaVentas
             {
                 if (dsClienteTemporal.Tables != null)
                 {
-                    int idCliente = int.Parse(dsClienteTemporal.Tables[0].Rows[0][0].ToString());
+                    int idCliente = dsClienteTemporal.Tables[0].Rows[0][0].ToString().ToInt();
                     txtIdentificacionCliente.Text = dsClienteTemporal.Tables[0].Rows[0][1].ToString();
                     txtNombreCliente.Text = dsClienteTemporal.Tables[0].Rows[0][2].ToString();
                     txtApellidoCliente.Text = dsClienteTemporal.Tables[0].Rows[0][3].ToString();
@@ -97,7 +99,7 @@ namespace SistemaVentas
         {
             if (cbBusquedaCliente.Items.Count > 0)
             {
-                int idCliente = int.Parse(cbBusquedaCliente.SelectedValue.ToString());
+                int idCliente = cbBusquedaCliente.SelectedValue.ToString().ToInt();
                 frmVenta objVenta = new frmVenta(0, idCliente);
                 objVenta.ShowDialog();
             }
@@ -154,7 +156,7 @@ namespace SistemaVentas
                     objCliente.telefono2_cliente = txtTelefono2Cliente.Text;
                     try
                     {
-                        objCliente.id_referencia = int.Parse(cbReferencia.SelectedValue.ToString());
+                        objCliente.id_referencia = cbReferencia.SelectedValue.ToString().ToInt();
                     }
                     catch (Exception)
                     {
@@ -168,7 +170,7 @@ namespace SistemaVentas
                     {
                         MessageBox.Show("Cliente ingresado con exito");
                         objSaldo.id_cliente = objNegocioCliente.consultarUltimoId();
-                        objSaldo.saldo = double.Parse(txtSaldo.Text);
+                        objSaldo.saldo = txtSaldo.Text.ToDouble();
                         objNegocioSaldo.insertarSaldoInicial(objSaldo);
                     }
                     else
@@ -186,7 +188,7 @@ namespace SistemaVentas
                 objCliente.apellido_cliente = txtApellidoCliente.Text;
                 objCliente.telefono1_cliente = txtTelefono1Cliente.Text;
                 objCliente.telefono2_cliente = txtTelefono2Cliente.Text;
-                objCliente.id_referencia = int.Parse(cbReferencia.SelectedValue.ToString());
+                objCliente.id_referencia = cbReferencia.SelectedValue.ToString().ToInt();
                 objCliente.domicilio_cliente = txtDomicilioCliente.Text;
                 objCliente.email_cliente = txtEmailCliente.Text;
                 objSaldo.id_cliente = idCliente;
@@ -194,7 +196,7 @@ namespace SistemaVentas
                 {
                     txtSaldo.Text = "0";
                 }
-                objSaldo.saldo = double.Parse(txtSaldo.Text);
+                objSaldo.saldo = txtSaldo.Text.ToDouble();
                 objNegocioSaldo.modificarSaldoInicial(objSaldo);
 
                 if (objNegocioCliente.actualizarCliente(objCliente))
@@ -267,6 +269,8 @@ namespace SistemaVentas
             btnGuardarCliente.Enabled = true;
             btnHistorialCliente.Enabled = false;
             btnModificarCliente.Enabled = false;
+            btnPago.Enabled = false;
+            btnPagos.Enabled = false;
             btnNuevo.Text = "Cancelar";
             txtSaldo.ReadOnly = false;
         }
@@ -289,6 +293,8 @@ namespace SistemaVentas
             btnGuardarCliente.Enabled = false;
             btnHistorialCliente.Enabled = true;
             btnModificarCliente.Enabled = true;
+            btnPago.Enabled = true;
+            btnPagos.Enabled = true;
             btnNuevo.Text = "Nuevo";
         }
 
@@ -317,13 +323,13 @@ namespace SistemaVentas
             {
                 if (cbBusquedaCliente.SelectedValue != null)
                 {
-                    string valor = cbBusquedaCliente.SelectedValue.ToString();
+                    string idCliente = cbBusquedaCliente.SelectedValue.ToString();
 
-                    if (!valor.Equals("System.Data.DataRowView"))
+                    if (!idCliente.Equals("System.Data.DataRowView"))
                     {
-                        idCliente = int.Parse(valor);
+                        this.idCliente = idCliente.ToInt();
 
-                        dsCliente = objNegocioCliente.consultarClienteId(idCliente);
+                        dsCliente = objNegocioCliente.consultarClienteId(this.idCliente);
                         if (dsCliente != null)
                         {
                             llenarCliente(dsCliente);
@@ -402,6 +408,71 @@ namespace SistemaVentas
         private void label1_Click_1(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnPago_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if(txtSaldo.Text.ToDouble() > 0)
+                {
+                    int idcliente = cbBusquedaCliente.SelectedValue.ToString().ToInt();
+                    frmPago objPago = new frmPago(idcliente, 0);
+                    objPago.ShowDialog();
+                    dsCliente = objNegocioCliente.consultarClienteId(idCliente);
+                    if (dsCliente != null)
+                    {
+                        llenarCliente(dsCliente);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("No existen valores por pagar");
+                }
+                
+            }
+            catch (Exception)
+            {
+
+            }
+            finally
+            {
+            }
+        }
+
+        private void btnPagos_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int id_cliente = cbBusquedaCliente.SelectedValue.ToString().ToInt();
+                frmPago objPago = new frmPago(id_cliente, 1);
+                objPago.ShowDialog();
+            }
+            catch (Exception)
+            {
+
+            }
+            finally
+            {
+            }
+        }
+        //to filter comboBox with names that contains pressed characters do in 
+        private void comboBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            
+        }
+
+        private void cbBusquedaCliente_KeyUp(object sender, KeyEventArgs e)
+        {
+            string name = cbBusquedaCliente.Text; //join previous text and new pressed char
+            DataRow[] rows = dtCliente.Select("nombre_completo like  '%" + name + "%'");
+            DataTable filteredTable = dtCliente.Clone();
+            foreach (DataRow r in rows)
+                filteredTable.ImportRow(r);
+            cbBusquedaCliente.DataSource = null;
+            cbBusquedaCliente.DataSource = filteredTable.DefaultView;
+            cbBusquedaCliente.ValueMember = "id_cliente";
+            cbBusquedaCliente.DisplayMember = "nombre_completo";
         }
     }
 }

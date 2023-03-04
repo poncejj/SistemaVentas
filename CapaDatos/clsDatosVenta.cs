@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using Utilitarios;
 
 namespace CapaDatos
 {
@@ -88,7 +89,7 @@ namespace CapaDatos
             return dsVenta;
         }
 
-        public bool modificarTotalVenta(int id, double total)
+        public bool modificarTotalVenta(int id_venta, int id_cliente, decimal total)
         {
             conect = new Conexion();
             conect.abrirConexion();
@@ -96,7 +97,8 @@ namespace CapaDatos
             cmd.CommandType = CommandType.StoredProcedure;
             try
             {
-                cmd.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = id;
+                cmd.Parameters.Add(new SqlParameter("@id_venta", SqlDbType.Int)).Value = id_venta;
+                cmd.Parameters.Add(new SqlParameter("@id_cliente", SqlDbType.Int)).Value = id_cliente;
                 cmd.Parameters.Add(new SqlParameter("@total", SqlDbType.Money)).Value = total;
                 cmd.ExecuteNonQuery();
 
@@ -163,7 +165,7 @@ namespace CapaDatos
             return dsVenta;
         }
 
-        public bool insertarVenta(String fecha, int id_cliente, double subtotal, double total, int estado)
+        public bool insertarVenta(String fecha, int id_cliente, decimal subtotal, decimal total, int estado)
         {
             conect = new Conexion();
             conect.abrirConexion();
@@ -191,7 +193,7 @@ namespace CapaDatos
 
         }
 
-        public bool modificarVenta(int id, String fecha, int id_cliente, double subtotal, double total, bool estado)
+        public bool modificarVenta(int id, String fecha, int id_cliente, decimal subtotal, decimal total, bool estado)
         {
             conect = new Conexion();
             conect.abrirConexion();
@@ -287,7 +289,7 @@ namespace CapaDatos
 
                 if (dsVenta.Tables[0].Rows.Count > 0)
                 {
-                    idRetorno = int.Parse(dsVenta.Tables[0].Rows[0][0].ToString());
+                    idRetorno = dsVenta.Tables[0].Rows[0][0].ToString().ToInt();
                 }
             }
             catch (Exception)
@@ -326,11 +328,10 @@ namespace CapaDatos
             }
         }
 
-        public DataTable consultarVentasPendientes(string fechaDesde, string fechaHasta, int idReferenciaInterna)
+        public DataSet consultarVentasPendientes(int idCliente, string fechaDesde, string fechaHasta, int idReferencia)
         {
             conect = new Conexion();
             dsVenta = new DataSet();
-            DataTable dtVenta = new DataTable();
             conect.abrirConexion();
             SqlCommand cmd = new SqlCommand("sp_consultar_venta_pendiente", conect.conn);
             cmd.CommandType = CommandType.StoredProcedure;
@@ -339,13 +340,14 @@ namespace CapaDatos
 
                 cmd.Parameters.Add(new SqlParameter("@fecha_desde", SqlDbType.Date)).Value = fechaDesde;
                 cmd.Parameters.Add(new SqlParameter("@fecha_hasta", SqlDbType.Date)).Value = fechaHasta;
-                cmd.Parameters.Add(new SqlParameter("@id_referencia", SqlDbType.Int)).Value = idReferenciaInterna;
+                cmd.Parameters.Add(new SqlParameter("@id_cliente", SqlDbType.Int)).Value = idCliente;
+                cmd.Parameters.Add(new SqlParameter("@id_referencia", SqlDbType.Int)).Value = idReferencia;
 
                 cmd.ExecuteNonQuery();
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 da.Fill(dsVenta);
-                dtVenta = dsVenta.Tables[0].Copy();
+                return dsVenta;
             }
             catch (Exception)
             {
@@ -355,7 +357,6 @@ namespace CapaDatos
             {
                 conect.cerrarConexion();
             }
-            return dtVenta;
         
         }
     }
